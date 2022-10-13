@@ -1,4 +1,4 @@
-## Environment variables
+## Development Environment variables
 Create and add environment variables in .env file:  
 POSTGRES_USER = postgres  
 PASSWORD = xxxxxx  
