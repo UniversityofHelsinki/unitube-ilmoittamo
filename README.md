@@ -24,6 +24,7 @@ node index.js
 ## Environments and deployments
 ### Local environment 
 local environment communicates with postgres instance installed on your local environment using postgres alpine docker container 
+local environment communicates with opencast instance installed on your local environment using docker container
 
 ### Development environment in OpenShift
 main branch deploys to test Openshift project named Poistamo with labeling ilmoittamo-dev
