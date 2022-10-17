@@ -171,5 +171,5 @@ deploy_prod:
     # start build process in OpenShift
     - oc start-build ilmoittamo-prod --from-dir=. --follow
     # patch openshift buildConfig file
-    - oc patch bc/ilmoittamo-test --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
-    - oc patch bc/ilmoittamo-test --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
+    - oc patch bc/ilmoittamo-prod --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
+    - oc patch bc/ilmoittamo-prod --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
