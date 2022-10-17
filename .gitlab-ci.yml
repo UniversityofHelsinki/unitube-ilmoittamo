@@ -62,7 +62,7 @@ deploy_dev:
     - oc create secret generic ilmoittamo-opencast-dev-password --from-literal=ILMOITTAMO_OPENCAST_PASS=$ILMOITTAMO_OPENCAST_PASS_DEV
     # list environment variables here
     # postgres environment variables
-    - oc set env --from=secret/iomoittamo-dev-password dc/ilmoittamo-dev
+    - oc set env --from=secret/ilmoittamo-dev-password dc/ilmoittamo-dev
     - oc set env dc/ilmoittamo-dev POSTGRES_USER=$ILMOITTAMO_DEV_USER_NAME
     - oc set env dc/ilmoittamo-dev PORT=$ILMOITTAMO_DEV_PORT
     - oc set env dc/ilmoittamo-dev HOST=$ILMOITTAMO_DEV_HOST
