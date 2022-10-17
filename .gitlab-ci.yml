@@ -156,7 +156,7 @@ deploy_prod:
     # list environment variables here
     # postgres environment variables
     - oc set env --from=secret/ilmoittamo-prod-password dc/ilmoittamo-prod
-    - oc set env dc/ilmoittamo-prod POSTGRES_USER=$ILMOITTAMO_TEST_USER_NAME
+    - oc set env dc/ilmoittamo-prod POSTGRES_USER=$ILMOITTAMO_PROD_USER_NAME
     - oc set env dc/ilmoittamo-prod PORT=$ILMOITTAMO_PROD_PORT
     - oc set env dc/ilmoittamo-prod HOST=$ILMOITTAMO_PROD_HOST
     - oc set env dc/ilmoittamo-prod DATABASE=$ILMOITTAMO_PROD_DATABASE
