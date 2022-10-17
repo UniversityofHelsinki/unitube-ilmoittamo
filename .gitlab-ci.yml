@@ -1,0 +1,82 @@
+image: quay.io/tike/alpine-oc-node
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+
+# Define a hidden job to be used with extends
+# Better than default to avoid activating cache for all jobs
+.dependencies_cache:
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm
+    policy: pull
+
+# Define the stages
+stages:
+  - setup
+  - deploy
+
+# Define the process for setup stage
+setup:
+  stage: setup
+  tags:
+    - ohtu-build-1
+  script:
+    - npm ci
+  extends: .dependencies_cache
+  cache:
+    policy: pull-push
+  artifacts:
+    expire_in: 1h
+    paths:
+      - node_modules
+
+# Define the process for deploy stage to development environment
+# Development environment uses https://ocast-devel-a1.it.helsinki.fi (OpenCast test environment)
+deploy_dev:
+  stage: deploy
+  tags:
+    - ohtu-build-1
+  environment:
+    name: development
+  only:
+    - main
+  except:
+    # Skip deploy when scheduled npm audit and outdated scans are executed.
+    - schedules
+  script:
+    # set home path for openshift 1001 user
+    - export HOME=/home/1001
+    # before any action, I connect to the OpenShift server with the appropriate credentials
+    - oc login https://$OPENSHIFT_ADDR_TEST:$OPENSHIFT_PORT --token=$OPENSHIFT_TOKEN_TEST
+    - oc project poistamo
+    - oc set env dc/ilmoittamo-dev OPENSHIFT_NODEJS_IP=$OPENSHIFT_NODEJS_IP
+    - oc set env dc/ilmoittamo-dev OPENSHIFT_NODEJS_PORT=$OPENSHIFT_NODEJS_PORT
+    # add secrets here
+    - oc delete secret generic ilmoittamo-dev-password --ignore-not-found
+    - oc create secret generic ilmoittamo-dev-password --from-literal=PASSWORD=$ILMOITTAMO_DEV_PASSWORD
+    - oc delete secret generic ilmoittamo-opencast-dev-password --ignore-not-found
+    - oc create secret generic ilmoittamo-opencast-dev-password --from-literal=ILMOITTAMO_OPENCAST_PASS=$ILMOITTAMO_OPENCAST_PASS_DEV
+    # list environment variables here
+    # postgres environment variables
+    - oc set env --from=secret/iomoittamo-dev-password dc/ilmoittamo-dev
+    - oc set env dc/ilmoittamo-dev POSTGRES_USER=$ILMOITTAMO_DEV_USER_NAME
+    - oc set env dc/ilmoittamo-dev PORT=$ILMOITTAMO_DEV_PORT
+    - oc set env dc/ilmoittamo-dev HOST=$ILMOITTAMO_DEV_HOST
+    - oc set env dc/ilmoittamo-dev DATABASE=$ILMOITTAMO_DEV_DATABASE
+    - oc set env dc/ilmoittamo-dev SSL=$ILMOITTAMO_DEV_SSL
+    - oc set env dc/ilmoittamo-dev TZ="Europe/Helsinki"
+    # opencast environment variables
+    - oc set env --from=secret/ilmoittamo-opencast-dev-password dc/ilmoittamo-dev
+    - oc set env dc/ilmoittamo-dev ILMOITTAMO_OPENCAST_USER=$ILMOITTAMO_OPENCAST_USER_DEV
+    - oc set env dc/ilmoittamo-dev ILMOITTAMO_OPENCAST_HOST=$ILMOITTAMO_OPENCAST_HOST_DEV
+    # cronjob variable
+    - oc set env dc/ilmoittamo-dev CRON_START_TIME="30 0 * * *"
+    # start build process in OpenShift
+    - oc start-build ilmoittamo-dev --from-dir=. --follow
+    # patch openshift buildConfig file
+    - oc patch bc/ilmoittamo-dev --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
+    - oc patch bc/ilmoittamo-dev --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
