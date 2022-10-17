@@ -126,3 +126,50 @@ deploy_test:
     # patch openshift buildConfig file
     - oc patch bc/ilmoittamo-test --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
     - oc patch bc/ilmoittamo-test --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
+
+# Production environment uses https://webcast.it.helsinki.fi (OpenCast production environment)
+deploy_prod:
+  stage: deploy
+  tags:
+    - ohtu-build-1
+  environment:
+    name: production
+  only:
+    - prod
+  when: manual
+  except:
+    # Skip deploy when scheduled npm audit and outdated scans are executed.
+    - schedules
+  script:
+    # set home path for openshift 1001 user
+    - export HOME=/home/1001
+    # before any action, I connect to the OpenShift server with the appropriate credentials
+    - oc login https://$OPENSHIFT_ADDR_PROD:$OPENSHIFT_PORT --token=$OPENSHIFT_TOKEN_PROD
+    - oc project poistamo
+    - oc set env dc/ilmoittamo-prod OPENSHIFT_NODEJS_IP=$OPENSHIFT_NODEJS_IP
+    - oc set env dc/ilmoittamo-prod OPENSHIFT_NODEJS_PORT=$OPENSHIFT_NODEJS_PORT
+    # add secrets here
+    - oc delete secret generic ilmoittamo-prod-password --ignore-not-found
+    - oc create secret generic ilmoittamo-prod-password --from-literal=PASSWORD=$ILMOITTAMO_PROD_PASSWORD
+    - oc delete secret generic ilmoittamo-opencast-prod-password --ignore-not-found
+    - oc create secret generic ilmoittamo-opencast-prod-password --from-literal=ILMOITTAMO_OPENCAST_PASS=$ILMOITTAMO_OPENCAST_PASS_PROD
+    # list environment variables here
+    # postgres environment variables
+    - oc set env --from=secret/ilmoittamo-prod-password dc/ilmoittamo-prod
+    - oc set env dc/ilmoittamo-prod POSTGRES_USER=$ILMOITTAMO_TEST_USER_NAME
+    - oc set env dc/ilmoittamo-prod PORT=$ILMOITTAMO_PROD_PORT
+    - oc set env dc/ilmoittamo-prod HOST=$ILMOITTAMO_PROD_HOST
+    - oc set env dc/ilmoittamo-prod DATABASE=$ILMOITTAMO_PROD_DATABASE
+    - oc set env dc/ilmoittamo-prod SSL=$ILMOITTAMO_PROD_SSL
+    - oc set env dc/ilmoittamo-prod TZ="Europe/Helsinki"
+    # opencast environment variables
+    - oc set env --from=secret/ilmoittamo-opencast-prod-password dc/ilmoittamo-prod
+    - oc set env dc/ilmoittamo-prod ILMOITTAMO_OPENCAST_USER=$ILMOITTAMO_OPENCAST_USER_PROD
+    - oc set env dc/ilmoittamo-prod ILMOITTAMO_OPENCAST_HOST=$ILMOITTAMO_OPENCAST_HOST_PROD
+    # cronjob variable
+    - oc set env dc/ilmoittamo-prod CRON_START_TIME="30 0 * * *"
+    # start build process in OpenShift
+    - oc start-build ilmoittamo-prod --from-dir=. --follow
+    # patch openshift buildConfig file
+    - oc patch bc/ilmoittamo-test --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
+    - oc patch bc/ilmoittamo-test --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
