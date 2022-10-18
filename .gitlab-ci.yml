@@ -73,6 +73,9 @@ deploy_dev:
     - oc set env --from=secret/ilmoittamo-opencast-dev-password dc/ilmoittamo-dev
     - oc set env dc/ilmoittamo-dev ILMOITTAMO_OPENCAST_USER=$ILMOITTAMO_OPENCAST_USER_DEV
     - oc set env dc/ilmoittamo-dev ILMOITTAMO_OPENCAST_HOST=$ILMOITTAMO_OPENCAST_HOST_DEV
+    # email sender environment variables
+    - oc set env dc/ilmoittamo-dev ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_DEV
+    - oc set env dc/ilmoittamo-dev ILMOITTAMO_EMAIL_SENDER_PORT=$ILMOITTAMO_EMAIL_SENDER_PORT_DEV
     # cronjob variable
     - oc set env dc/ilmoittamo-dev CRON_START_TIME="30 0 * * *"
     # start build process in OpenShift
@@ -119,6 +122,9 @@ deploy_test:
     - oc set env --from=secret/ilmoittamo-opencast-test-password dc/ilmoittamo-test
     - oc set env dc/ilmoittamo-test ILMOITTAMO_OPENCAST_USER=$ILMOITTAMO_OPENCAST_USER_TEST
     - oc set env dc/ilmoittamo-test ILMOITTAMO_OPENCAST_HOST=$ILMOITTAMO_OPENCAST_HOST_TEST
+    # email sender environment variables
+    - oc set env dc/ilmoittamo-test ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_TEST
+    - oc set env dc/ilmoittamo-test ILMOITTAMO_EMAIL_SENDER_PORT=$ILMOITTAMO_EMAIL_SENDER_PORT_TEST
     # cronjob variable
     - oc set env dc/ilmoittamo-test CRON_START_TIME="30 0 * * *"
     # start build process in OpenShift
@@ -166,6 +172,9 @@ deploy_prod:
     - oc set env --from=secret/ilmoittamo-opencast-prod-password dc/ilmoittamo-prod
     - oc set env dc/ilmoittamo-prod ILMOITTAMO_OPENCAST_USER=$ILMOITTAMO_OPENCAST_USER_PROD
     - oc set env dc/ilmoittamo-prod ILMOITTAMO_OPENCAST_HOST=$ILMOITTAMO_OPENCAST_HOST_PROD
+    # email sender environment variables
+    - oc set env dc/ilmoittamo-prod ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_PROD
+    - oc set env dc/ilmoittamo-prod ILMOITTAMO_EMAIL_SENDER_PORT=$ILMOITTAMO_EMAIL_SENDER_PORT_PROD
     # cronjob variable
     - oc set env dc/ilmoittamo-prod CRON_START_TIME="30 0 * * *"
     # start build process in OpenShift
