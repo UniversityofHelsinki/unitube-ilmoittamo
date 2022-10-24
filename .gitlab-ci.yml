@@ -17,6 +17,7 @@ variables:
 # Define the stages
 stages:
   - setup
+  - test
   - deploy
 
 # Define the process for setup stage
@@ -33,6 +34,16 @@ setup:
     expire_in: 1h
     paths:
       - node_modules
+
+
+# Define the process for test stage
+test:
+  stage: test
+  tags:
+    - ohtu-build-1
+  script:
+    - npm test
+
 
 # Define the process for deploy stage to development environment
 # Development environment uses https://ocast-devel-a1.it.helsinki.fi (OpenCast test environment)
