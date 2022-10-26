@@ -8,12 +8,11 @@ DATABASE= expired_videos
 
 CRON_START_TIME=0 0 * * *
 
-ILMOITTAMO_OPENCAST_HOST = (OpenCast development url)
-ILMOITTAMO_OPENCAST_USER = (Local Opencast user)
-ILMOITTAMO_OPENCAST_PASS = (Local Opencast password)
+ILMOITTAMO_OPENCAST_HOST = (OpenCast development url)  
+ILMOITTAMO_OPENCAST_USER = (Local Opencast user)  
+ILMOITTAMO_OPENCAST_PASS = (Local Opencast password)  
 
 ILMOITTAMO_EMAIL_SENDER_HOST = (Local email sender url)
-ILMOITTAMO_EMAIL_SENDER_PORT = (Local email sender port)
 
 ## Start postgres as Docker container
 docker run --name exp_videos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=xxxxxxx -e POSTGRES_DB=expired_videos -d postgres:14-alpine
