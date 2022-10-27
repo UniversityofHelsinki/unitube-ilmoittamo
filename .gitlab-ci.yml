@@ -87,7 +87,7 @@ deploy_dev:
     # email sender environment variables
     - oc set env dc/ilmoittamo-dev ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_DEV
     # cronjob variable
-    - oc set env dc/ilmoittamo-dev CRON_START_TIME="30 0 * * *"
+    - oc set env dc/ilmoittamo-dev CRON_START_TIME="30 1 * * *"
     # start build process in OpenShift
     - oc start-build ilmoittamo-dev --from-dir=. --follow
     # patch openshift buildConfig file
@@ -135,7 +135,7 @@ deploy_test:
     # email sender environment variables
     - oc set env dc/ilmoittamo-test ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_TEST
     # cronjob variable
-    - oc set env dc/ilmoittamo-test CRON_START_TIME="30 0 * * *"
+    - oc set env dc/ilmoittamo-test CRON_START_TIME="30 1 * * *"
     # start build process in OpenShift
     - oc start-build ilmoittamo-test --from-dir=. --follow
     # patch openshift buildConfig file
@@ -184,7 +184,7 @@ deploy_prod:
     # email sender environment variables
     - oc set env dc/ilmoittamo-prod ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_PROD
     # cronjob variable
-    - oc set env dc/ilmoittamo-prod CRON_START_TIME="30 0 * * *"
+    - oc set env dc/ilmoittamo-prod CRON_START_TIME="30 1 * * *"
     # start build process in OpenShift
     - oc start-build ilmoittamo-prod --from-dir=. --follow
     # patch openshift buildConfig file
