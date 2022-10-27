@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const compression = require('compression');
 const database = require("./service/database");
+const cron = require('./service/cron');
 
 const ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 const port = process.env.OPENSHIFT_NODEJS_PORT || 3002;
@@ -27,5 +28,11 @@ database.query('SELECT NOW()', (err, res) => {
 app.listen(port, ipaddress, () => {
     console.log( 'Listening on ' + ipaddress + ', port ' + port );
 });
+
+
+(async () => {
+    // START CRONJOB
+    await cron.cronJob;
+})();
 
 module.exports = app;
