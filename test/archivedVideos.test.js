@@ -6,6 +6,7 @@ const client = require('../service/database');
 const Pool = require('pg-pool');
 const format = require('date-format');
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const redis = require('redis');
 
 beforeAll(async () => {
     const pool = new Pool({
@@ -41,6 +42,9 @@ afterEach(async () => {
     await wait(100);
 });
 
+afterAll(async () => {
+    return await redis;
+});
 
 describe('Video archiving tests', () => {
 

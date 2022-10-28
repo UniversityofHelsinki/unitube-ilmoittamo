@@ -38,6 +38,7 @@ setup:
 
 # Define the process for test stage
 test:
+  "test": "jest --watchAll --detectOpenHandles"
   stage: test
   services:
     - postgres:12.2-alpine
