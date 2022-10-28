@@ -41,11 +41,11 @@ test:
   stage: test
   services:
     - postgres:12.2-alpine
-    variables:
-      POSTGRES_DB: ${DATABASE}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${PASSWORD}
-      POSTGRES_HOST_AUTH_METHOD: trust
+  variables:
+    POSTGRES_DB: ${DATABASE}
+    POSTGRES_USER: ${POSTGRES_USER}
+    POSTGRES_PASSWORD: ${PASSWORD}
+    POSTGRES_HOST_AUTH_METHOD: trust
   tags:
     - ohtu-build-1
   script:
