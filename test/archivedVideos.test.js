@@ -45,7 +45,7 @@ afterAll(async () => {
 
 describe('Video archiving tests', () => {
 
-    it('doesnt archive a video which is already in archived series', async () => {
+    it('ARCHIVED_DATE is (today + three months or before)', async () => {
 
         const videos = await notify.queryVideosAndSendNotifications();
 
