@@ -41,10 +41,6 @@ afterEach(async () => {
     await wait(100);
 });
 
-afterAll(async () => {
-    await wait(300);
-    jest.clearAllMocks();
-});
 
 describe('Video archiving tests', () => {
 
