@@ -5,8 +5,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const compression = require('compression');
-const database = require("./service/database");
+const database = require('./service/database');
 const cron = require('./service/cron');
+const notify = require('./service/notify');
 
 const ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 const port = process.env.OPENSHIFT_NODEJS_PORT || 3002;
