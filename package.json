@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "start": "node index.js",
-    "coverage": "jest --coverage"
+    "test": "jest --detectOpenHandles --forceExit",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
