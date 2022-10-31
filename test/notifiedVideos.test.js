@@ -4,7 +4,6 @@ const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
 const client = require('../service/database');
 const Pool = require('pg-pool');
-const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 beforeAll(async () => {
     const pool = new Pool({
@@ -24,7 +23,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    await client.query('CREATE TEMPORARY TABLE videos(video_id VARCHAR(255) NOT NULL, archived_date date, actual_archived_date date, deletion_date date, informed_date date, video_creation_date date, error_date date, notification_sent_at date, PRIMARY KEY(video_id))');
+    await client.query('CREATE TEMPORARY TABLE videos(video_id VARCHAR(255) NOT NULL, archived_date date, actual_archived_date date, deletion_date date, informed_date date, video_creation_date date, error_date date, notification_sent_at timestamp, PRIMARY KEY(video_id))');
     await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'e8a86433-0245-44b8-b0d7-69f6578bac6f\', \'2024-01-01\'::date, \'2008-01-01\'::date)');
     await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b33c-56a1-11ed-9b6a-0242ac120002\', \'2023-12-01\'::date, \'2009-01-01\'::date)');
     await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b65c-56a1-11ed-9b6a-0242ac120002\', \'2023-01-21\'::date, \'2010-01-01\'::date)');
@@ -40,16 +39,27 @@ afterAll(async () => {
     jest.clearAllMocks();
 });
 
-describe('Video archiving tests', () => {
+describe('Video tests', () => {
 
-    it('ARCHIVED_DATE is (today + three months or before)', async () => {
+    it('Should Return Two Videos To Be Notified', async () => {
         const videos = await notify.queryVideosAndSendNotifications();
-
         expect(videos.rows).toHaveLength(2);
+    });
+
+    it('First Video Should Have Correct Archived Dates And IDs', async () => {
+        const videos = await notify.queryVideosAndSendNotifications();
         const firstVideoArchivedDate = new Date(videos.rows[0].archived_date);
         const expectedArchivedDate = new Date(2023,0,21);
         expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
         expect(videos.rows[0].video_id).toEqual('a637b65c-56a1-11ed-9b6a-0242ac120002');
+    });
+
+    it('Second Video Should Have Correct Archived Dates And IDs', async () => {
+        const videos = await notify.queryVideosAndSendNotifications();
+        const secondVideoArchivedDate = new Date(videos.rows[1].archived_date);
+        const expectedSecondVideosArchivedDate = new Date(2023,0,28);
+        expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
+        expect(videos.rows[1].video_id).toEqual('a637b8dc-56a1-11ed-9b6a-0242ac120002');
     });
 });
 
