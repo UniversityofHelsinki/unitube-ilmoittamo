@@ -3,15 +3,22 @@
 const fs = require('fs');
 const path = require('path');
 const database = require('./database');
-const format = require('date-format');
+const constants = require("../utils/constants");
 
-exports.queryVideosAndSendNotifications = async() => {
-    const selectedVideosWithArchivedDatesSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeArchived.sql"), "utf8");
-    let now = new Date();
-    let oldAfterThreeMonths =  now.setMonth(now.getMonth() + 3);
-    const oldAfterThreeMonthsStr = format.asString('yyyy-MM-dd', new Date(oldAfterThreeMonths));
+const getNotifiedDate = () => {
+    let notifiedDate = new Date();
+    notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
+    return notifiedDate;
+};
 
-    const videosToBeNotified = await database.query(selectedVideosWithArchivedDatesSQL, [oldAfterThreeMonthsStr]);
+const queryVideosAndSendNotifications = async() => {
+    const selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
+    const notifiedDate = getNotifiedDate();
+    console.log(notifiedDate);
+    const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [notifiedDate]);
+    console.log(notifiedVideos);
+};
 
-    return videosToBeNotified;
-}
+module.exports = {
+    queryVideosAndSendNotifications : queryVideosAndSendNotifications
+};
