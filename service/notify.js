@@ -14,9 +14,7 @@ const getNotifiedDate = () => {
 const queryVideosAndSendNotifications = async() => {
     const selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
     const notifiedDate = getNotifiedDate();
-    console.log(notifiedDate);
     const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [notifiedDate]);
-    console.log(notifiedVideos);
     return notifiedVideos;
 };
 

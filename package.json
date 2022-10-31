@@ -1,10 +1,10 @@
 {
-  "name": "ilmoittamo",
+  "name": "unitube-ilmoittamo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand --forceExit",
+    "test": "jest",
     "start": "node index.js",
     "coverage": "jest --coverage"
   },
