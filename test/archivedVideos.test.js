@@ -4,7 +4,6 @@ const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
 const client = require('../service/database');
 const Pool = require('pg-pool');
-const format = require('date-format');
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 beforeAll(async () => {
@@ -52,8 +51,9 @@ describe('Video archiving tests', () => {
         const videos = await notify.queryVideosAndSendNotifications();
 
         expect(videos.rows).toHaveLength(2);
-        const oldAfterThreeMonthsStr = format.asString('yyyy-MM-dd', new Date(videos.rows[0].archived_date));
-        expect(oldAfterThreeMonthsStr).toEqual('2023-01-21');
+        const firstVideoArchivedDate = new Date(videos.rows[0].archived_date);
+        const expectedArchivedDate = new Date(2023,0,21);
+        expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
         expect(videos.rows[0].video_id).toEqual('a637b65c-56a1-11ed-9b6a-0242ac120002');
     });
 });

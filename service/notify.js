@@ -17,6 +17,7 @@ const queryVideosAndSendNotifications = async() => {
     console.log(notifiedDate);
     const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [notifiedDate]);
     console.log(notifiedVideos);
+    return notifiedVideos;
 };
 
 module.exports = {
