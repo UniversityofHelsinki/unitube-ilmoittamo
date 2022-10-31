@@ -37,6 +37,8 @@ setup:
 
 
 # Define the process for test stage
+# Create Postgres container for the tests
+# Run Test Coverage
 test:
   stage: test
   services:
