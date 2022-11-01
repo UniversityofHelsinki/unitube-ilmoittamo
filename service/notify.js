@@ -21,13 +21,10 @@ const queryVideos = async() => {
 
 const getSeries = async (video) => {
     const videoId = video.video_id;
-    console.log("video id: ", videoId);
     const eventResponse = await apiService.getEvent(videoId);
     if (eventResponse.status == 200) {
         const seriesId = eventResponse.data.is_part_of;
-        console.log("series id : " + seriesId);
         const seriesData = await apiService.getSeries(seriesId);
-        console.log(seriesData.data);
         return seriesData.data;
     }
 }
