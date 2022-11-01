@@ -1,6 +1,5 @@
 const notify = require('../service/notify');
 const apiService = require('../service/apiService');
-const emailService = require('../service/emailService');
 require('../service/timer');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
@@ -67,7 +66,6 @@ describe('Video tests', () => {
 
 
 jest.mock('../service/apiService');
-jest.mock('../service/emailService');
 
 test('series metadata is returned', async () => {
 
