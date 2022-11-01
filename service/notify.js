@@ -1,9 +1,9 @@
-// cron job calls this function
 const fs = require('fs');
 const path = require('path');
 const database = require('./database');
 const constants = require("../utils/constants");
 const apiService = require('./apiService');
+const emailService = require('./emailService');
 
 
 const getNotifiedDate = () => {
@@ -19,17 +19,28 @@ const queryVideos = async() => {
     return notifiedVideos;
 };
 
-const getSeries = async (video) => {
+const getSeriesData = async (seriesId) => {
+    const seriesData = await apiService.getSeries(seriesId);
+    return seriesData.data;
+}
+
+const getVideoData = async (video) => {
     const videoId = video.video_id;
     const eventResponse = await apiService.getEvent(videoId);
-    if (eventResponse.status == 200) {
-        const seriesId = eventResponse.data.is_part_of;
-        const seriesData = await apiService.getSeries(seriesId);
-        return seriesData.data;
+    return eventResponse;
+}
+
+const createEmails = async (seriesData, archive_date, videoData) => {
+    for (const contributor of seriesData.contributors) {
+        const email = contributor + '@ad.helsinki.fi';
+        emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
     }
 }
 
+
 module.exports = {
     getVideosToArchive : queryVideos,
-    getSeriesData : getSeries
+    getSeriesData : getSeriesData,
+    getVideoData : getVideoData,
+    createEmails: createEmails
 };
