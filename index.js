@@ -5,7 +5,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const compression = require('compression');
-const database = require("./service/database");
+const database = require('./service/database');
 const cron = require('./service/cron');
 
 const ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Hello World!');
 });
 
 database.query('SELECT NOW()', (err, res) => {
