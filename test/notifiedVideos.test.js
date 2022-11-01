@@ -1,5 +1,6 @@
 const notify = require('../service/notify');
 const apiService = require('../service/apiService');
+const emailService = require('../service/emailService');
 require('../service/timer');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
@@ -66,6 +67,7 @@ describe('Video tests', () => {
 
 
 jest.mock('../service/apiService');
+jest.mock('../service/emailService');
 
 test('series metadata is returned', async () => {
 
@@ -87,10 +89,11 @@ test('series metadata is returned', async () => {
         }
     });
 
-    const seriesMetadata = await notify.getSeriesData(videoId);
+    const videoMetadata = await notify.getVideoData(videoId);
+    const seriesMetadata = await notify.getSeriesData(videoMetadata.data.is_part_of);
     expect(seriesMetadata.identifier).toBe(seriesId);
     expect(seriesMetadata.contributors).toContain('seppo');
-})
+});
 
 
 
