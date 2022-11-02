@@ -1,4 +1,5 @@
 const notify = require('../service/notify');
+const apiService = require('../service/apiService');
 require('../service/timer');
 const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
@@ -42,12 +43,12 @@ afterAll(async () => {
 describe('Video tests', () => {
 
     it('Should Return Two Videos To Be Notified', async () => {
-        const videos = await notify.queryVideosAndSendNotifications();
+        const videos = await notify.getVideosToArchive();
         expect(videos.rows).toHaveLength(2);
     });
 
     it('First Video Should Have Correct Archived Dates And IDs', async () => {
-        const videos = await notify.queryVideosAndSendNotifications();
+        const videos = await notify.getVideosToArchive();
         const firstVideoArchivedDate = new Date(videos.rows[0].archived_date);
         const expectedArchivedDate = new Date(2023,0,21);
         expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
@@ -55,13 +56,42 @@ describe('Video tests', () => {
     });
 
     it('Second Video Should Have Correct Archived Dates And IDs', async () => {
-        const videos = await notify.queryVideosAndSendNotifications();
+        const videos = await notify.getVideosToArchive();
         const secondVideoArchivedDate = new Date(videos.rows[1].archived_date);
         const expectedSecondVideosArchivedDate = new Date(2023,0,28);
         expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
         expect(videos.rows[1].video_id).toEqual('a637b8dc-56a1-11ed-9b6a-0242ac120002');
     });
 });
+
+
+jest.mock('../service/apiService');
+
+test('series metadata is returned', async () => {
+
+    const videoId = 'e8a86433-0245-44b8-b0d7-69f6578bac6f';
+    const seriesId = 'e8a86433-0245-44b8-b0d7-69f6578bac6f';
+
+    apiService.getEvent.mockResolvedValue({
+        status: 200,
+        data: {
+            identifier: 'e8a86433-0245-44b8-b0d7-69f6578bac6f',
+            is_part_of: '0345f162-9bbe-48fe-bd6f-f061a3300485'
+        }
+    });
+    apiService.getSeries.mockResolvedValue({
+        status: 200,
+        data: {
+            identifier: 'e8a86433-0245-44b8-b0d7-69f6578bac6f',
+            contributors: ['seppo']
+        }
+    });
+
+    const seriesMetadata = await notify.getSeriesData(videoId);
+    expect(seriesMetadata.identifier).toBe(seriesId);
+    expect(seriesMetadata.contributors).toContain('seppo');
+})
+
 
 
 
