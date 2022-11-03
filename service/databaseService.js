@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 const database = require("./database");
-const Constants = require('../utils/constants');
 
 exports.updateNotificationSentAt = async(videoId) => {
     const now = new Date();

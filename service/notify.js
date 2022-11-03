@@ -34,7 +34,7 @@ const getVideoData = async (video) => {
 const createEmails = async (seriesData, archive_date, videoData) => {
     for (const contributor of seriesData.contributors) {
         const email = contributor + '@ad.helsinki.fi';
-        emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
+        await emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
     }
 }
 
