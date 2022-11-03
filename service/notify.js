@@ -4,6 +4,7 @@ const database = require('./database');
 const constants = require("../utils/constants");
 const apiService = require('./apiService');
 const emailService = require('./emailService');
+const databaseService = require("./databaseService");
 
 
 const getNotifiedDate = () => {
@@ -33,7 +34,18 @@ const getVideoData = async (video) => {
 const createEmails = async (seriesData, archive_date, videoData) => {
     for (const contributor of seriesData.contributors) {
         const email = contributor + '@ad.helsinki.fi';
-        emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
+        await emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
+    }
+}
+
+const sendNotifications = async (videos) => {
+    for(const video of videos.rows) {
+        const videoData = await getVideoData(video);
+        if (videoData.status == 200) {
+            const seriesData = await getSeriesData(videoData.data.is_part_of);
+            await createEmails(seriesData, video.archived_date, videoData);
+            await databaseService.updateNotificationSentAt(video.video_id);
+        }
     }
 }
 
@@ -42,5 +54,6 @@ module.exports = {
     getVideosToArchive : queryVideos,
     getSeriesData : getSeriesData,
     getVideoData : getVideoData,
-    createEmails: createEmails
+    createEmails: createEmails,
+    sendNotifications: sendNotifications
 };
