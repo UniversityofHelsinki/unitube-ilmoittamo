@@ -62,6 +62,12 @@ describe('Video tests', () => {
         expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
         expect(videos.rows[1].video_id).toEqual('a637b8dc-56a1-11ed-9b6a-0242ac120002');
     });
+
+    it('should have notification_sent_at set after notification is sent', async () => {
+        const videos = await notify.getVideosToArchive();
+
+    });
+
 });
 
 
@@ -92,6 +98,8 @@ test('series metadata is returned', async () => {
     expect(seriesMetadata.identifier).toBe(seriesId);
     expect(seriesMetadata.contributors).toContain('seppo');
 });
+
+
 
 
 
