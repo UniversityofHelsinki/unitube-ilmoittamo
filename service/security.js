@@ -1,6 +1,6 @@
-const adminHost = process.env.POISTAMO_OPENCAST_HOST;
-const username = process.env.POISTAMO_OPENCAST_USER;
-const password = process.env.POISTAMO_OPENCAST_PASS;
+const adminHost = process.env.ILMOITTAMO_OPENCAST_HOST;
+const username = process.env.ILMOITTAMO_OPENCAST_USER;
+const password = process.env.ILMOITTAMO_OPENCAST_PASS;
 const userpass = Buffer.from(`${username}:${password}`).toString('base64');
 const auth = `Basic ${userpass}`;
 const axios = require('axios');
