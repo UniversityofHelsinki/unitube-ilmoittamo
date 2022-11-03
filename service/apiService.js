@@ -15,7 +15,6 @@ exports.getSeries = async (seriesId) => {
     try {
         const seriesUrl = constants.OPENCAST_SERIES_PATH + seriesId;
         const response = await security.opencastBase.get(seriesUrl);
-        console.log(response);
         return response;
     } catch (error) {
         throw error;

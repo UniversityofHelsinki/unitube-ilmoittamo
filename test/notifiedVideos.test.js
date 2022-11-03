@@ -49,16 +49,16 @@ describe('Video tests', () => {
 
     it('First Video Should Have Correct Archived Dates And IDs', async () => {
         const videos = await notify.getVideosToArchive();
-        const firstVideoArchivedDate = new Date(videos.rows[0].archived_date);
-        const expectedArchivedDate = new Date(2023,0,21);
+        const firstVideoArchivedDate = videos.rows[0].archived_date;
+        const expectedArchivedDate = '21.01.2023';
         expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
         expect(videos.rows[0].video_id).toEqual('a637b65c-56a1-11ed-9b6a-0242ac120002');
     });
 
     it('Second Video Should Have Correct Archived Dates And IDs', async () => {
         const videos = await notify.getVideosToArchive();
-        const secondVideoArchivedDate = new Date(videos.rows[1].archived_date);
-        const expectedSecondVideosArchivedDate = new Date(2023,0,28);
+        const secondVideoArchivedDate = videos.rows[1].archived_date;
+        const expectedSecondVideosArchivedDate = '28.01.2023';
         expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
         expect(videos.rows[1].video_id).toEqual('a637b8dc-56a1-11ed-9b6a-0242ac120002');
     });
@@ -87,10 +87,11 @@ test('series metadata is returned', async () => {
         }
     });
 
-    const seriesMetadata = await notify.getSeriesData(videoId);
+    const videoMetadata = await notify.getVideoData(videoId);
+    const seriesMetadata = await notify.getSeriesData(videoMetadata.data.is_part_of);
     expect(seriesMetadata.identifier).toBe(seriesId);
     expect(seriesMetadata.contributors).toContain('seppo');
-})
+});
 
 
 
