@@ -1,3 +1,4 @@
+const TRASH = 'trash';
 const DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT = 3;
 const OPENCAST_EVENTS_PATH = '/api/events/';
 const OPENCAST_SERIES_PATH = '/api/series/';
@@ -5,5 +6,6 @@ const OPENCAST_SERIES_PATH = '/api/series/';
 module.exports = {
     DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT,
     OPENCAST_EVENTS_PATH,
-    OPENCAST_SERIES_PATH
-}
+    OPENCAST_SERIES_PATH,
+    TRASH
+};

@@ -13,7 +13,7 @@ const getNotifiedDate = () => {
     return notifiedDate;
 };
 
-const queryVideos = async() => {
+const queryVideosToBeNotified = async() => {
     const selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
     const notifiedDate = getNotifiedDate();
     const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [notifiedDate]);
@@ -32,26 +32,35 @@ const getVideoData = async (video) => {
 }
 
 const createEmails = async (seriesData, archive_date, videoData) => {
-    for (const contributor of seriesData.contributors) {
-        const email = contributor + '@ad.helsinki.fi';
-        await emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
+    if (seriesData.contributors) {
+        for (const contributor of seriesData.contributors) {
+            const email = contributor + '@ad.helsinki.fi';
+            console.log(email);
+            await emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
+        }
     }
 }
 
+const filterTrashSeries = (series) => !series.title.toLowerCase().includes(constants.TRASH) ? series : '';
+
 const sendNotifications = async (videos) => {
-    for(const video of videos.rows) {
+    for (const video of videos.rows) {
         const videoData = await getVideoData(video);
         if (videoData.status == 200) {
             const seriesData = await getSeriesData(videoData.data.is_part_of);
-            await createEmails(seriesData, video.archived_date, videoData);
-            await databaseService.updateNotificationSentAt(video.video_id);
+            const filteredSeries = filterTrashSeries(seriesData);
+            console.log("filtered series data: ", filteredSeries);
+            if (filteredSeries) {
+                await createEmails(filteredSeries, video.archived_date, videoData);
+                await databaseService.updateNotificationSentAt(video.video_id);
+            }
         }
     }
 }
 
 
 module.exports = {
-    getVideosToArchive : queryVideos,
+    getVideosToBeNotified : queryVideosToBeNotified,
     getSeriesData : getSeriesData,
     getVideoData : getVideoData,
     createEmails: createEmails,
