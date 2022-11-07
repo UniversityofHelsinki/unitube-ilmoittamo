@@ -23,20 +23,30 @@ const queryVideos = async() => {
 const getSeriesData = async (seriesId) => {
     const seriesData = await apiService.getSeries(seriesId);
     return seriesData.data;
-}
+};
 
 const getVideoData = async (video) => {
     const videoId = video.video_id;
     const eventResponse = await apiService.getEvent(videoId);
     return eventResponse;
-}
+};
+
+const getRecipientsData = async (contributor) => {
+    const recipients = await apiService.getRecipients(contributor);
+    return recipients.data;
+};
 
 const createEmails = async (seriesData, archive_date, videoData) => {
     for (const contributor of seriesData.contributors) {
-        const email = contributor + '@ad.helsinki.fi';
+        const match = constants.IAM_GROUP_PREFIXES.filter(entry => contributor.includes(entry));
+        if (match && match.length > 0) {
+            let recipients = await getRecipientsData(contributor);
+            console.log(recipients.members);
+        }
+        const email = contributor + constants.EMAIL_POSTFIX;
         await emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
     }
-}
+};
 
 const sendNotifications = async (videos) => {
     for(const video of videos.rows) {
