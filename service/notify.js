@@ -41,18 +41,18 @@ const createEmails = async (seriesData, archive_date, videoData) => {
     }
 }
 
-const filterTrashSeries = (series) => !series.title.toLowerCase().includes(constants.TRASH) ? series : '';
+const isTrashSeries = (series) => series.title.toLowerCase().includes(constants.TRASH);
 
 const sendNotifications = async (videos) => {
     for (const video of videos.rows) {
         const videoData = await getVideoData(video);
         if (videoData.status == 200) {
             const seriesData = await getSeriesData(videoData.data.is_part_of);
-            const filteredSeries = filterTrashSeries(seriesData);
-            console.log("filtered series data: ", filteredSeries);
-            if (filteredSeries) {
-                await createEmails(filteredSeries, video.archived_date, videoData);
+            if (!isTrashSeries(seriesData)) {
+                await createEmails(seriesData, video.archived_date, videoData);
                 await databaseService.updateNotificationSentAt(video.video_id);
+            } else {
+                await databaseService.updateSendEmailStatus(video.video_id);
             }
         }
     }
