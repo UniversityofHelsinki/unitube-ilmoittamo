@@ -27,8 +27,8 @@ const getSeriesData = async (seriesId) => {
 
 const getVideoData = async (video) => {
     const videoId = video.video_id;
-    const eventResponse = await apiService.getEvent(videoId);
-    return eventResponse;
+    const videoResponse = await apiService.getEvent(videoId);
+    return videoResponse.data;
 };
 
 const getRecipientsData = async (contributor) => {
@@ -36,28 +36,54 @@ const getRecipientsData = async (contributor) => {
     return recipients.data;
 };
 
-const createEmails = async (seriesData, archive_date, videoData) => {
-    for (const contributor of seriesData.contributors) {
-        const match = constants.IAM_GROUP_PREFIXES.filter(entry => contributor.includes(entry));
-        if (match && match.length > 0) {
-            let recipients = await getRecipientsData(contributor);
-            console.log(recipients.members);
-        }
-        const email = contributor + constants.EMAIL_POSTFIX;
-        await emailService.sendMail(email, seriesData.title, videoData.data.title, archive_date);
+const createEmails = async (recipientsMap) => {
+    for (const [recipient, payload] of recipientsMap) {
+        console.log(recipient, payload);
+        await emailService.sendMail(recipient, payload);
     }
 };
 
-const sendNotifications = async (videos) => {
-    for(const video of videos.rows) {
-        const videoData = await getVideoData(video);
-        if (videoData.status == 200) {
-            const seriesData = await getSeriesData(videoData.data.is_part_of);
-            await createEmails(seriesData, video.archived_date, videoData);
-            await databaseService.updateNotificationSentAt(video.video_id);
+const getRecipients = async(series) => {
+    let recipients = [];
+    for (const contributor of series.contributors) {
+        const match = constants.IAM_GROUP_PREFIXES.filter(entry => contributor.includes(entry));
+        if (match && match.length > 0) {
+            let recipientsByGroup = await getRecipientsData(contributor);
+            for (const recipientByGroup of recipientsByGroup.members) {
+                recipients.push(recipientByGroup + constants.EMAIL_POSTFIX);
+            }
+        } else {
+            recipients.push(contributor + constants.EMAIL_POSTFIX);
         }
     }
-}
+    let uniqueRecipients = [...new Set(recipients)];
+    return uniqueRecipients;
+};
+
+const getRecipientsMap = async (videos) => {
+    let recipientsMap = new Map();
+    for(const video of videos.rows) {
+        const videoData = await getVideoData(video);
+        const seriesData = await getSeriesData(videoData.is_part_of);
+        if (videoData && seriesData) {
+            const recipients = await getRecipients(seriesData);
+            for (const recipient of recipients) {
+                const payload = [];
+                const payloadObject = {video : {identifier : videoData.identifier, title: videoData.title, archivedDate: video.archived_date }, series : {title : seriesData.title}};
+
+                if (!recipientsMap.has(recipient)) {
+                    payload.push(payloadObject);
+                    recipientsMap.set(recipient, payload);
+                } else {
+                    let payload = recipientsMap.get(recipient);
+                    payload.push(payloadObject);
+                    recipientsMap[recipient] = payload;
+                }
+            }
+        }
+    }
+    return recipientsMap;
+};
 
 
 module.exports = {
@@ -65,5 +91,5 @@ module.exports = {
     getSeriesData : getSeriesData,
     getVideoData : getVideoData,
     createEmails: createEmails,
-    sendNotifications: sendNotifications
+    getRecipientsMap: getRecipientsMap
 };
