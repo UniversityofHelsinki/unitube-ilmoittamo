@@ -43,12 +43,12 @@ afterAll(async () => {
 describe('Video tests', () => {
 
     it('Should Return Two Videos To Be Notified', async () => {
-        const videos = await notify.getVideosToArchive();
+        const videos = await notify.getVideosToSendNotification();
         expect(videos.rows).toHaveLength(2);
     });
 
     it('First Video Should Have Correct Archived Dates And IDs', async () => {
-        const videos = await notify.getVideosToArchive();
+        const videos = await notify.getVideosToSendNotification();
         const firstVideoArchivedDate = videos.rows[0].archived_date;
         const expectedArchivedDate = '21.01.2023';
         expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
@@ -56,7 +56,7 @@ describe('Video tests', () => {
     });
 
     it('Second Video Should Have Correct Archived Dates And IDs', async () => {
-        const videos = await notify.getVideosToArchive();
+        const videos = await notify.getVideosToSendNotification();
         const secondVideoArchivedDate = videos.rows[1].archived_date;
         const expectedSecondVideosArchivedDate = '28.01.2023';
         expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
@@ -64,7 +64,7 @@ describe('Video tests', () => {
     });
 
     it('should have notification_sent_at set after notification is sent', async () => {
-        const videos = await notify.getVideosToArchive();
+        const videos = await notify.getVideosToSendNotification();
 
     });
 

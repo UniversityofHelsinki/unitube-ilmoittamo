@@ -4,8 +4,6 @@ const database = require('./database');
 const constants = require("../utils/constants");
 const apiService = require('./apiService');
 const emailService = require('./emailService');
-const databaseService = require("./databaseService");
-
 
 const getNotifiedDate = () => {
     let notifiedDate = new Date();
@@ -38,7 +36,6 @@ const getRecipientsData = async (contributor) => {
 
 const createEmails = async (recipientsMap) => {
     for (const [recipient, payload] of recipientsMap) {
-        console.log(recipient, payload);
         await emailService.sendMail(recipient, payload);
     }
 };
@@ -87,7 +84,7 @@ const getRecipientsMap = async (videos) => {
 
 
 module.exports = {
-    getVideosToArchive : queryVideos,
+    getVideosToSendNotification : queryVideos,
     getSeriesData : getSeriesData,
     getVideoData : getVideoData,
     createEmails: createEmails,
