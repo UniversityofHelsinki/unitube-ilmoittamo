@@ -3,7 +3,7 @@ require("dotenv").config();
 
 exports.sendMail = async (recipient, payload) => {
     const mailPath = process.env.ILMOITTAMO_EMAIL_SENDER_HOST  + '/api/send';
-    let message = 'Hyvä ' + recipient + ' sinulla on vanhenevia videoita : ' + '\n';
+    let message = 'Hyvä vastaanottaja, ' + 'sinulla on vanhenevia videoita : ' + '\n';
     for (const email of payload) {
         message += 'video: ' + email.video.title + ' sarjasta : ' + email.series.title + ' vanhentuu ' + email.video.archivedDate + '\n';
     }
