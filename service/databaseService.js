@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const database = require("./database");
 
-exports.updateNotificationSentAt = async(videosToSendNotifications) => {
+const updateNotificationSentAt = async(videosToSendNotifications) => {
     try {
         for (const video of videosToSendNotifications.rows) {
             const now = new Date();
@@ -15,6 +15,18 @@ exports.updateNotificationSentAt = async(videosToSendNotifications) => {
     } catch (error) {
         console.log(error);
     }
+};
+
+const updateSkipEmailStatus = async(videoId) => {
+    const skipEmailStatus = true;
+    const updateEmailSendStatusSQL = fs.readFileSync(path.resolve(__dirname, "../sql/updateEmailSendStatus.sql"), "utf8");
+    const updatedVideoEntry = await database.query(updateEmailSendStatusSQL, [skipEmailStatus, videoId]);
+    return updatedVideoEntry.rowCount;
+};
+
+module.exports = {
+    updateNotificationSentAt : updateNotificationSentAt,
+    updateSkipEmailStatus : updateSkipEmailStatus
 };
 
 

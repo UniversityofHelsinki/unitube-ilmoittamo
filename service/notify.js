@@ -4,6 +4,7 @@ const database = require('./database');
 const constants = require("../utils/constants");
 const apiService = require('./apiService');
 const emailService = require('./emailService');
+const databaseService = require('./databaseService');
 
 const getNotifiedDate = () => {
     let notifiedDate = new Date();
@@ -61,24 +62,29 @@ const isTrashSeries = (series) => series.title.toLowerCase().includes(constants.
 
 const getRecipientsMap = async (videos) => {
     let recipientsMap = new Map();
-    for(const video of videos.rows) {
+    for (const video of videos.rows) {
         const videoData = await getVideoData(video);
         const seriesData = await getSeriesData(videoData.is_part_of);
-        if (videoData && seriesData && !isTrashSeries(seriesData)) {
-            const recipients = await getRecipients(seriesData);
-            for (const recipient of recipients) {
-                const payload = [];
-                const payloadObject = {video : {identifier : videoData.identifier, title: videoData.title, archivedDate: video.archived_date }, series : {title : seriesData.title}};
-
-                if (!recipientsMap.has(recipient)) {
-                    payload.push(payloadObject);
-                    recipientsMap.set(recipient, payload);
-                } else {
-                    let payload = recipientsMap.get(recipient);
-                    payload.push(payloadObject);
-                    recipientsMap[recipient] = payload;
+        if (videoData && seriesData) {
+            if (!isTrashSeries(seriesData)) {
+                const recipients = await getRecipients(seriesData);
+                for (const recipient of recipients) {
+                    const payload = [];
+                    const payloadObject = {video : {identifier : videoData.identifier, title: videoData.title, archivedDate: video.archived_date }, series : {title : seriesData.title}};
+                    if (!recipientsMap.has(recipient)) {
+                        payload.push(payloadObject);
+                        recipientsMap.set(recipient, payload);
+                    } else {
+                        let payload = recipientsMap.get(recipient);
+                        payload.push(payloadObject);
+                        recipientsMap[recipient] = payload;
+                    }
                 }
+            } else {
+                await databaseService.updateSkipEmailStatus(videoData.identifier);
             }
+        } else {
+            await databaseService.updateSkipEmailStatus(video.video_id);
         }
     }
     return recipientsMap;
