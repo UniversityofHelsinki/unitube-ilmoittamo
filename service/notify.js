@@ -60,6 +60,20 @@ const getRecipients = async(series) => {
 
 const isTrashSeries = (series) => series.title.toLowerCase().includes(constants.TRASH);
 
+const populateRecipientsMap = (recipientsMap, recipient, videoData, seriesData, video) => {
+    const payload = [];
+    const payloadObject = {video : {identifier : videoData.identifier, title: videoData.title, archivedDate: video.archived_date }, series : {title : seriesData.title}};
+    if (!recipientsMap.has(recipient)) {
+        payload.push(payloadObject);
+        recipientsMap.set(recipient, payload);
+    } else {
+        let payload = recipientsMap.get(recipient);
+        payload.push(payloadObject);
+        recipientsMap[recipient] = payload;
+    }
+    return recipientsMap;
+};
+
 const getRecipientsMap = async (videos) => {
     let recipientsMap = new Map();
     for (const video of videos.rows) {
@@ -69,16 +83,7 @@ const getRecipientsMap = async (videos) => {
             if (!isTrashSeries(seriesData)) {
                 const recipients = await getRecipients(seriesData);
                 for (const recipient of recipients) {
-                    const payload = [];
-                    const payloadObject = {video : {identifier : videoData.identifier, title: videoData.title, archivedDate: video.archived_date }, series : {title : seriesData.title}};
-                    if (!recipientsMap.has(recipient)) {
-                        payload.push(payloadObject);
-                        recipientsMap.set(recipient, payload);
-                    } else {
-                        let payload = recipientsMap.get(recipient);
-                        payload.push(payloadObject);
-                        recipientsMap[recipient] = payload;
-                    }
+                    recipientsMap = populateRecipientsMap(recipientsMap, recipient, videoData, seriesData, video);
                 }
             } else {
                 await databaseService.updateSkipEmailStatus(videoData.identifier);

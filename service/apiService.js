@@ -24,7 +24,6 @@ const getSeries = async (seriesId) => {
 const getRecipients = async (groupUid) => {
     try {
         const membersUrl = constants.IAM_GROUPS_PATH_PREFIX + groupUid + constants.IAM_GROUPS_PATH_POSTFIX;
-        console.log(membersUrl);
         const response = await security.iamGroupsBase(membersUrl);
         return response;
     } catch (error) {
