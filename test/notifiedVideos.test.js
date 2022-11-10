@@ -94,7 +94,7 @@ test('series metadata is returned', async () => {
     });
 
     const videoMetadata = await notify.getVideoData(videoId);
-    const seriesMetadata = await notify.getSeriesData(videoMetadata.data.is_part_of);
+    const seriesMetadata = await notify.getSeriesData(videoMetadata.is_part_of);
     expect(seriesMetadata.identifier).toBe(seriesId);
     expect(seriesMetadata.contributors).toContain('seppo');
 });

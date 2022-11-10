@@ -57,12 +57,14 @@ const getRecipients = async(series) => {
     return uniqueRecipients;
 };
 
+const isTrashSeries = (series) => series.title.toLowerCase().includes(constants.TRASH);
+
 const getRecipientsMap = async (videos) => {
     let recipientsMap = new Map();
     for(const video of videos.rows) {
         const videoData = await getVideoData(video);
         const seriesData = await getSeriesData(videoData.is_part_of);
-        if (videoData && seriesData) {
+        if (videoData && seriesData && !isTrashSeries(seriesData)) {
             const recipients = await getRecipients(seriesData);
             for (const recipient of recipients) {
                 const payload = [];

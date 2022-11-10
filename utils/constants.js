@@ -5,6 +5,7 @@ const EMAIL_POSTFIX = '@ad.helsinki.fi';
 const IAM_GROUPS_PATH_PREFIX = '/iam/groups/group/';
 const IAM_GROUPS_PATH_POSTFIX = '/members';
 const IAM_GROUP_PREFIXES = ['grp-', 'hy-', 'sys-'];
+const TRASH = 'trash';
 
 
 module.exports = {
@@ -14,5 +15,6 @@ module.exports = {
     EMAIL_POSTFIX,
     IAM_GROUPS_PATH_PREFIX,
     IAM_GROUPS_PATH_POSTFIX,
-    IAM_GROUP_PREFIXES
+    IAM_GROUP_PREFIXES,
+    TRASH
 }
