@@ -1,6 +1,6 @@
 FROM node:16-alpine
 RUN apk update && \
-    apk add --no-cache tzdata
+    apk add --no-cache tzdata curl
 RUN adduser node root
 COPY . /home/node/app
 RUN chmod -R 755 /home/node/app
