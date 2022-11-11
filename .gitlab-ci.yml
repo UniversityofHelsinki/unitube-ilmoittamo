@@ -79,6 +79,8 @@ deploy_dev:
     - oc create secret generic ilmoittamo-dev-password --from-literal=PASSWORD=$ILMOITTAMO_DEV_PASSWORD
     - oc delete secret generic ilmoittamo-opencast-dev-password --ignore-not-found
     - oc create secret generic ilmoittamo-opencast-dev-password --from-literal=ILMOITTAMO_OPENCAST_PASS=$ILMOITTAMO_OPENCAST_PASS_DEV
+    - oc delete secret generic ilmoittamo-api-gw-key --ignore-not-found
+    - oc create secret generic ilmoittamo-api-gw-key --from-literal=IAM_GROUPS_API_KEY=$IAM_GROUPS_API_KEY_TEST
     # list environment variables here
     # postgres environment variables
     - oc set env --from=secret/ilmoittamo-dev-password dc/ilmoittamo-dev
@@ -94,6 +96,9 @@ deploy_dev:
     - oc set env dc/ilmoittamo-dev ILMOITTAMO_OPENCAST_HOST=$ILMOITTAMO_OPENCAST_HOST_DEV
     # email sender environment variables
     - oc set env dc/ilmoittamo-dev ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_DEV
+    # api-gateway environment variables
+    - oc set env dc/ilmoittamo-dev IAM_GROUPS_HOST=$IAM_GROUPS_HOST_TEST
+    - oc set env --from=secret/ilmoittamo-api-gw-key dc/ilmoittamo-dev
     # cronjob variable
     - oc set env dc/ilmoittamo-dev CRON_START_TIME="30 1 * * *"
     # start build process in OpenShift
@@ -127,6 +132,8 @@ deploy_test:
     - oc create secret generic ilmoittamo-test-password --from-literal=PASSWORD=$ILMOITTAMO_TEST_PASSWORD
     - oc delete secret generic ilmoittamo-opencast-test-password --ignore-not-found
     - oc create secret generic ilmoittamo-opencast-test-password --from-literal=ILMOITTAMO_OPENCAST_PASS=$ILMOITTAMO_OPENCAST_PASS_TEST
+    - oc delete secret generic ilmoittamo-api-gw-key --ignore-not-found
+    - oc create secret generic ilmoittamo-api-gw-key --from-literal=IAM_GROUPS_API_KEY=$IAM_GROUPS_API_KEY_TEST
     # list environment variables here
     # postgres environment variables
     - oc set env --from=secret/ilmoittamo-test-password dc/ilmoittamo-test
@@ -142,6 +149,9 @@ deploy_test:
     - oc set env dc/ilmoittamo-test ILMOITTAMO_OPENCAST_HOST=$ILMOITTAMO_OPENCAST_HOST_TEST
     # email sender environment variables
     - oc set env dc/ilmoittamo-test ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_TEST
+    # api-gateway environment variables
+    - oc set env dc/ilmoittamo-test IAM_GROUPS_HOST = $IAM_GROUPS_HOST_TEST
+    - oc set env --from=secret/ilmoittamo-api-gw-key dc/ilmoittamo-test
     # cronjob variable
     - oc set env dc/ilmoittamo-test CRON_START_TIME="30 1 * * *"
     # start build process in OpenShift
@@ -176,6 +186,8 @@ deploy_prod:
     - oc create secret generic ilmoittamo-prod-password --from-literal=PASSWORD=$ILMOITTAMO_PROD_PASSWORD
     - oc delete secret generic ilmoittamo-opencast-prod-password --ignore-not-found
     - oc create secret generic ilmoittamo-opencast-prod-password --from-literal=ILMOITTAMO_OPENCAST_PASS=$ILMOITTAMO_OPENCAST_PASS_PROD
+    - oc delete secret generic ilmoittamo-api-gw-key --ignore-not-found
+    - oc create secret generic ilmoittamo-api-gw-key --from-literal=IAM_GROUPS_API_KEY=$IAM_GROUPS_API_KEY_PROD
     # list environment variables here
     # postgres environment variables
     - oc set env --from=secret/ilmoittamo-prod-password dc/ilmoittamo-prod
@@ -191,6 +203,9 @@ deploy_prod:
     - oc set env dc/ilmoittamo-prod ILMOITTAMO_OPENCAST_HOST=$ILMOITTAMO_OPENCAST_HOST_PROD
     # email sender environment variables
     - oc set env dc/ilmoittamo-prod ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_PROD
+    # api-gateway environment variables
+    - oc set env dc/ilmoittamo-prod IAM_GROUPS_HOST = $IAM_GROUPS_HOST_PROD
+    - oc set env --from=secret/ilmoittamo-api-gw-key dc/ilmoittamo-prod
     # cronjob variable
     - oc set env dc/ilmoittamo-prod CRON_START_TIME="30 1 * * *"
     # start build process in OpenShift

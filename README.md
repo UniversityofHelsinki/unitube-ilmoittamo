@@ -13,6 +13,8 @@ ILMOITTAMO_OPENCAST_USER = (Local Opencast user)
 ILMOITTAMO_OPENCAST_PASS = (Local Opencast password)  
 
 ILMOITTAMO_EMAIL_SENDER_HOST = http://localhost:3003
+IAM_GROUPS_HOST = https://gw-api-test.it.helsinki.fi
+IAM_GROUPS_API_KEY = xxxxxxxxxxxxxxxxxxxx
 
 ## Start postgres as Docker container
 docker run --name exp_videos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=xxxxxxx -e POSTGRES_DB=expired_videos -d postgres:14-alpine
