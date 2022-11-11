@@ -11,6 +11,6 @@ test('sending mail returns create status', async () => {
         }
     });
 
-    const mail = await email.sendMail('joku@jossain.com', 'sarjan nimi', 'videon nimi', '12.2.2022');
+    const mail = await email.sendMail('joku@jossain.com', [{video : {identifier : "12312312312", title: "testivideo", archivedDate: "01.01.2021" }, series : {title : "koesarja"}}]);
     expect(mail.status).toBe('create');
 })
