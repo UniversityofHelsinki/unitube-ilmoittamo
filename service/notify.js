@@ -31,8 +31,12 @@ const getVideoData = async (video) => {
 };
 
 const getRecipientsData = async (contributor) => {
-    const recipients = await apiService.getRecipients(contributor);
-    return recipients.data;
+    try {
+        const recipients = await apiService.getRecipients(contributor);
+        return recipients.data;
+    } catch (error) {
+      console.log(error, "retrieving contributor : " , contributor);
+    }
 };
 
 const createEmails = async (recipientsMap) => {
@@ -47,8 +51,10 @@ const getRecipients = async(series) => {
         const match = constants.IAM_GROUP_PREFIXES.filter(entry => contributor.includes(entry));
         if (match && match.length > 0) {
             let recipientsByGroup = await getRecipientsData(contributor);
-            for (const recipientByGroup of recipientsByGroup.members) {
-                recipients.push(recipientByGroup + constants.EMAIL_POSTFIX);
+            if (recipientsByGroup && recipientsByGroup.members && recipientsByGroup.members.length > 0) {
+                for (const recipientByGroup of recipientsByGroup.members) {
+                    recipients.push(recipientByGroup + constants.EMAIL_POSTFIX);
+                }
             }
         } else {
             recipients.push(contributor + constants.EMAIL_POSTFIX);
