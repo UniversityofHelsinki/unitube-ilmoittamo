@@ -97,7 +97,7 @@ deploy_dev:
     # email sender environment variables
     - oc set env dc/ilmoittamo-dev ILMOITTAMO_EMAIL_SENDER_HOST=$ILMOITTAMO_EMAIL_SENDER_HOST_DEV
     # api-gateway environment variables
-    - oc set env dc/ilmoittamo-dev IAM_GROUPS_HOST = $IAM_GROUPS_HOST_TEST
+    - oc set env dc/ilmoittamo-dev IAM_GROUPS_HOST=$IAM_GROUPS_HOST_DEV
     - oc set env --from=secret/ilmoittamo-api-gw-key dc/ilmoittamo-dev
     # cronjob variable
     - oc set env dc/ilmoittamo-dev CRON_START_TIME="30 1 * * *"
