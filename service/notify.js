@@ -12,10 +12,17 @@ const getNotifiedDate = () => {
     return notifiedDate;
 };
 
+const getNotifiedDateRange = (notifiedDate, numberOfWeeks) => {
+    notifiedDate.setDate(notifiedDate.getDate() + numberOfWeeks * 7);
+    return notifiedDate;
+};
+
 const queryVideos = async() => {
     const selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
     const notifiedDate = getNotifiedDate();
-    const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [notifiedDate]);
+    const startDate = getNotifiedDateRange(new Date(notifiedDate), -1 * constants.DEFAULT_VIDEO_NOTIFIED_WEEK_AMOUNT);
+    const endDate = getNotifiedDateRange(new Date(notifiedDate), constants.DEFAULT_VIDEO_NOTIFIED_WEEK_AMOUNT);
+    const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
     return notifiedVideos;
 };
 
