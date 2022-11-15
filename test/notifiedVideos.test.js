@@ -72,7 +72,7 @@ describe('Video tests', () => {
         notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
         notifiedDate.setDate(notifiedDate.getDate() + 7);
         const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        const expectedSecondVideosArchivedDate = notifiedDate;
+
         expect(secondVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
         expect(videos.rows[1].video_id).toEqual('a637b7ba-56a1-11ed-9b6a-0242ac120003');
     });
