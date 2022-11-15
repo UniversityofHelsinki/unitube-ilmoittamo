@@ -20,8 +20,11 @@ const getNotifiedDateRange = (notifiedDate, numberOfWeeks) => {
 const queryVideos = async() => {
     const selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
     const notifiedDate = getNotifiedDate();
+    console.log("notified date: ", notifiedDate);
     const startDate = getNotifiedDateRange(new Date(notifiedDate), -1 * constants.DEFAULT_VIDEO_NOTIFIED_WEEK_AMOUNT);
+    console.log("start date: ", startDate);
     const endDate = getNotifiedDateRange(new Date(notifiedDate), constants.DEFAULT_VIDEO_NOTIFIED_WEEK_AMOUNT);
+    console.log("end date: ", endDate);
     const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
     return notifiedVideos;
 };
@@ -114,5 +117,6 @@ module.exports = {
     getSeriesData : getSeriesData,
     getVideoData : getVideoData,
     createEmails: createEmails,
-    getRecipientsMap: getRecipientsMap
+    getRecipientsMap: getRecipientsMap,
+    getNotifiedDate: getNotifiedDate
 };

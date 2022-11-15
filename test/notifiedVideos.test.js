@@ -5,6 +5,7 @@ const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
 const client = require('../service/database');
 const Pool = require('pg-pool');
+const { getNotifiedDate } = require("../service/notify");
 
 beforeAll(async () => {
     const pool = new Pool({
@@ -41,7 +42,10 @@ afterAll(async () => {
     jest.clearAllMocks();
 });
 
+
 describe('Video tests', () => {
+
+    jest.spyOn(notify, getNotifiedDate).mockReturnValue(new Date("15.11.2022"));
 
     it('Should Return Two Videos To Be Notified', async () => {
         const videos = await notify.getVideosToSendNotification();
