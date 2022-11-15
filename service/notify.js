@@ -6,16 +6,23 @@ const apiService = require('./apiService');
 const emailService = require('./emailService');
 const databaseService = require('./databaseService');
 
-const getNotifiedDate = () => {
+const getNotifiedDate = (amountOfMonths) => {
     let notifiedDate = new Date();
-    notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
+    notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + amountOfMonths);
     return notifiedDate;
 };
 
-const queryVideos = async() => {
+const getNotifiedDateRange = (notifiedDate, numberOfWeeks) => {
+    notifiedDate.setDate(notifiedDate.getDate() + numberOfWeeks * 7);
+    return notifiedDate;
+};
+
+const queryVideos = async (months, weeks) => {
     const selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
-    const notifiedDate = getNotifiedDate();
-    const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [notifiedDate]);
+    const notifiedDate = getNotifiedDate(months);
+    const startDate = getNotifiedDateRange(new Date(notifiedDate), -1 * constants.VIDEO_NOTIFIED_ONE_WEEK);
+    const endDate = getNotifiedDateRange(new Date(notifiedDate), constants.VIDEO_NOTIFIED_ONE_WEEK);
+    const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
     return notifiedVideos;
 };
 
