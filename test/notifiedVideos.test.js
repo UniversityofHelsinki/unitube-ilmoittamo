@@ -5,6 +5,7 @@ const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
 const client = require('../service/database');
 const Pool = require('pg-pool');
+const { getNotifiedDate } = require("../service/notify");
 const constants = require("../utils/constants");
 
 beforeAll(async () => {
@@ -25,13 +26,13 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    await client.query('CREATE TEMPORARY TABLE videos(video_id VARCHAR(255) NOT NULL, archived_date date, actual_archived_date date, deletion_date date, video_creation_date date, error_date date, first_notification_sent_at timestamp, second_notification_sent_at timestamp, third_notification_sent_at timestamp, skip_email boolean default false, PRIMARY KEY(video_id))');
-    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'e8a86433-0245-44b8-b0d7-69f6578bac6f\', \'2022-12-01\'::date, \'2008-01-01\'::date)');
-    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b33c-56a1-11ed-9b6a-0242ac120001\', \'2023-02-01\'::date, \'2009-01-01\'::date)');
-    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b65c-56a1-11ed-9b6a-0242ac120002\', \'2023-02-16\'::date, \'2010-01-01\'::date)');
-    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b7ba-56a1-11ed-9b6a-0242ac120003\', \'2023-02-09\'::date, \'2011-01-01\'::date)');
-    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b8dc-56a1-11ed-9b6a-0242ac120004\', \'2023-01-28\'::date, \'2012-01-01\'::date)');
-    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date, skip_email) VALUES (\'a637b8dc-56a1-11ed-9b6a-0242ac120005\', \'2023-01-28\'::date, \'2012-01-01\'::date, true)');
+    await client.query('CREATE TEMPORARY TABLE videos(video_id VARCHAR(255) NOT NULL, archived_date date, actual_archived_date date, deletion_date date, informed_date date, video_creation_date date, error_date date, notification_sent_at timestamp, skip_email boolean default false, PRIMARY KEY(video_id))');
+    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'e8a86433-0245-44b8-b0d7-69f6578bac6f\', current_date + interval \'3 months\' - INTERVAL \'30 DAY\', \'2008-01-01\'::date)');
+    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b33c-56a1-11ed-9b6a-0242ac120001\', current_date + interval \'3 months\' - INTERVAL \'14 DAY\', \'2009-01-01\'::date)');
+    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b65c-56a1-11ed-9b6a-0242ac120002\', current_date + interval \'3 months\' - INTERVAL \'7 DAY\', \'2010-01-01\'::date)');
+    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b7ba-56a1-11ed-9b6a-0242ac120003\', current_date + interval \'3 months\' + INTERVAL \'7 DAY\', \'2011-01-01\'::date)');
+    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'a637b8dc-56a1-11ed-9b6a-0242ac120004\', current_date + interval \'3 months\' + INTERVAL \'14 DAY\', \'2012-01-01\'::date)');
+    await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date, skip_email) VALUES (\'a637b8dc-56a1-11ed-9b6a-0242ac120005\', current_date + interval \'3 months\' + INTERVAL \'30 DAY\', \'2012-01-01\'::date, true)');
 
     await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'499c9d5e-64de-11ed-9022-0242ac120002\', \'2022-11-01\'::date, \'2008-01-01\'::date)');
     await client.query('INSERT INTO videos (video_id, archived_date, video_creation_date) VALUES (\'499ca394-64de-11ed-9022-0242ac120002\', \'2022-11-01\'::date, \'2009-01-01\'::date)');
@@ -53,59 +54,38 @@ afterAll(async () => {
 describe('Video 3 months tests', () => {
 
     it('Should Return Two Videos To Be Notified', async () => {
-        const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_THREE_MONTHS, constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK, null);
+        const videos = await notify.getVideosToSendNotification();
         expect(videos.rows).toHaveLength(2);
     });
 
     it('First Video Should Have Correct Archived Dates And IDs', async () => {
-        const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_THREE_MONTHS, constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK, null);
+        const videos = await notify.getVideosToSendNotification();
         const firstVideoArchivedDate = videos.rows[0].archived_date;
-        const expectedArchivedDate = '16.02.2023';
-        expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
+
+        let notifiedDate = new Date();
+        notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
+        notifiedDate.setDate(notifiedDate.getDate() - 7);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
+        expect(firstVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
         expect(videos.rows[0].video_id).toEqual('a637b65c-56a1-11ed-9b6a-0242ac120002');
     });
 
     it('Second Video Should Have Correct Archived Dates And IDs', async () => {
-        const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_THREE_MONTHS, constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK, null);
+        const videos = await notify.getVideosToSendNotification();
         const secondVideoArchivedDate = videos.rows[1].archived_date;
-        const expectedSecondVideosArchivedDate = '09.02.2023';
-        expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
+
+        let notifiedDate = new Date();
+        notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
+        notifiedDate.setDate(notifiedDate.getDate() + 7);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
+        expect(secondVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
         expect(videos.rows[1].video_id).toEqual('a637b7ba-56a1-11ed-9b6a-0242ac120003');
     });
 
-    it('should have first_notification_sent_at set after notification is sent', async () => {
-        const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_THREE_MONTHS, constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK, null);
-
-    });
-
-});
-
-
-describe('Video onr month tests', () => {
-
-    it('Should Return Two Videos To Be Notified', async () => {
-        const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_ONE_MONTH, null, constants.VIDEO_NOTIFIED_INTERVAL_THREE_DAYS);
-        expect(videos.rows).toHaveLength(2);
-    });
-
-    it('First Video Should Have Correct Archived Dates And IDs', async () => {
-        const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_ONE_MONTH, null, constants.VIDEO_NOTIFIED_INTERVAL_THREE_DAYS);
-        const firstVideoArchivedDate = videos.rows[0].archived_date;
-        const expectedArchivedDate = '16.12.2022';
-        expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
-        expect(videos.rows[0].video_id).toEqual('499ca72c-64de-11ed-9022-0242ac120002');
-    });
-
-    it('Second Video Should Have Correct Archived Dates And IDs', async () => {
-        const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_ONE_MONTH, null, constants.VIDEO_NOTIFIED_INTERVAL_THREE_DAYS);
-        const secondVideoArchivedDate = videos.rows[1].archived_date;
-        const expectedSecondVideosArchivedDate = '15.12.2022';
-        expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
-        expect(videos.rows[1].video_id).toEqual('499cacea-64de-11ed-9022-0242ac120002');
-    });
-
-    it('should have first_notification_sent_at set after notification is sent', async () => {
-        const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_ONE_MONTH, null, constants.VIDEO_NOTIFIED_INTERVAL_THREE_DAYS);
+    it('should have notification_sent_at set after notification is sent', async () => {
+        const videos = await notify.getVideosToSendNotification();
 
     });
 

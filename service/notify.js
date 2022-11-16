@@ -6,6 +6,12 @@ const apiService = require('./apiService');
 const emailService = require('./emailService');
 const databaseService = require('./databaseService');
 
+const getNotifiedDate = () => {
+    let notifiedDate = new Date();
+    notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
+    return notifiedDate;
+};
+
 const addMonths = (amountOfMonths) => {
     let notifiedDate = new Date();
     notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + amountOfMonths);
@@ -24,7 +30,8 @@ const addDays = (notifiedDate, numberOfDays) => {
 
 const queryVideos = async (months, weeks, days) => {
     const selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
-    const notifiedDate = addMonths(months);
+    //const notifiedDate = addMonths(months);
+    const notifiedDate = getNotifiedDate();
     let startDate = null;
     let endDate = null;
 
@@ -128,5 +135,6 @@ module.exports = {
     getSeriesData : getSeriesData,
     getVideoData : getVideoData,
     createEmails: createEmails,
-    getRecipientsMap: getRecipientsMap
+    getRecipientsMap: getRecipientsMap,
+    getNotifiedDate: getNotifiedDate
 };
