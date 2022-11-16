@@ -5,6 +5,8 @@ const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
 const client = require('../service/database');
 const Pool = require('pg-pool');
+const { getNotifiedDate } = require("../service/notify");
+const constants = require("../utils/constants");
 
 beforeAll(async () => {
     const pool = new Pool({
@@ -41,6 +43,7 @@ afterAll(async () => {
     jest.clearAllMocks();
 });
 
+
 describe('Video tests', () => {
 
     it('Should Return Two Videos To Be Notified', async () => {
@@ -51,17 +54,27 @@ describe('Video tests', () => {
     it('First Video Should Have Correct Archived Dates And IDs', async () => {
         const videos = await notify.getVideosToSendNotification();
         const firstVideoArchivedDate = videos.rows[0].archived_date;
-        const expectedArchivedDate = '21.01.2023';
-        expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
+
+        let notifiedDate = new Date();
+        notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
+        notifiedDate.setDate(notifiedDate.getDate() - 7);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
+        expect(firstVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
         expect(videos.rows[0].video_id).toEqual('a637b65c-56a1-11ed-9b6a-0242ac120002');
     });
 
     it('Second Video Should Have Correct Archived Dates And IDs', async () => {
         const videos = await notify.getVideosToSendNotification();
         const secondVideoArchivedDate = videos.rows[1].archived_date;
-        const expectedSecondVideosArchivedDate = '28.01.2023';
-        expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
-        expect(videos.rows[1].video_id).toEqual('a637b8dc-56a1-11ed-9b6a-0242ac120004');
+
+        let notifiedDate = new Date();
+        notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
+        notifiedDate.setDate(notifiedDate.getDate() + 7);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
+        expect(secondVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
+        expect(videos.rows[1].video_id).toEqual('a637b7ba-56a1-11ed-9b6a-0242ac120003');
     });
 
     it('should have first_notification_sent_at set after notification is sent', async () => {
