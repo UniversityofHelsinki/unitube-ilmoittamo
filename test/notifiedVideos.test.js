@@ -98,16 +98,22 @@ describe('Video onr month tests', () => {
     it('First Video Should Have Correct Archived Dates And IDs', async () => {
         const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_ONE_MONTH, null, constants.VIDEO_NOTIFIED_INTERVAL_THREE_DAYS);
         const firstVideoArchivedDate = videos.rows[0].archived_date;
-        const expectedArchivedDate = '19.12.2022';
-        expect(firstVideoArchivedDate).toEqual(expectedArchivedDate);
+        let notifiedDate = new Date();
+        notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK);
+        notifiedDate.setDate(notifiedDate.getDate() + 3);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        expect(firstVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
         expect(videos.rows[0].video_id).toEqual('499ca72c-64de-11ed-9022-0242ac120002');
     });
 
     it('Second Video Should Have Correct Archived Dates And IDs', async () => {
         const videos = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_ONE_MONTH, null, constants.VIDEO_NOTIFIED_INTERVAL_THREE_DAYS);
         const secondVideoArchivedDate = videos.rows[1].archived_date;
-        const expectedSecondVideosArchivedDate = '15.12.2022';
-        expect(secondVideoArchivedDate).toEqual(expectedSecondVideosArchivedDate);
+        let notifiedDate = new Date();
+        notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK);
+        notifiedDate.setDate(notifiedDate.getDate() - 1);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        expect(secondVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
         expect(videos.rows[1].video_id).toEqual('499cacea-64de-11ed-9022-0242ac120002');
     });
 
