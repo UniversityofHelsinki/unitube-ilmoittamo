@@ -5,7 +5,7 @@ const path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, '../.env')});
 const client = require('../service/database');
 const Pool = require('pg-pool');
-//const { getNotifiedDate } = require("../service/notify");
+const { getNotifiedDate } = require("../service/notify");
 const constants = require("../utils/constants");
 
 beforeAll(async () => {
