@@ -8,6 +8,7 @@ const compression = require('compression');
 const database = require('./service/database');
 const cron = require('./service/cron');
 const cron2 = require('./service/cron2');
+const cron3 = require('./service/cron3');
 
 const ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 const port = process.env.OPENSHIFT_NODEJS_PORT || 3002;
@@ -35,6 +36,7 @@ app.listen(port, ipaddress, () => {
     // START CRONJOB
     await cron.cronJobThreeMonths;
     await cron2.cronJobOneMonth;
+    await cron3.cronJobOneWeek;
 })();
 
 module.exports = app;
