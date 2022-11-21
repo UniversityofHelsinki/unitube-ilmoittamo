@@ -6,9 +6,9 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const compression = require('compression');
 const database = require('./service/database');
-const cron = require('./service/cron');
-const cron2 = require('./service/cron2');
-const cron3 = require('./service/cron3');
+const cronThreeMonths = require('./service/cronThreeMonths');
+const cronOneMonth = require('./service/cronOneMonth');
+const cronOneWeek = require('./service/cronOneWeek');
 
 const ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 const port = process.env.OPENSHIFT_NODEJS_PORT || 3002;
@@ -34,9 +34,9 @@ app.listen(port, ipaddress, () => {
 
 (async () => {
     // START CRONJOB
-    await cron.cronJobThreeMonths;
-    await cron2.cronJobOneMonth;
-    await cron3.cronJobOneWeek;
+    await cronThreeMonths.cronJobThreeMonths
+    await cronOneMonth.cronJobOneMonth;
+    await cronOneWeek.cronJobOneWeek;
 })();
 
 module.exports = app;
