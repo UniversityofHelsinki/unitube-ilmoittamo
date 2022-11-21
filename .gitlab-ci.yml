@@ -159,9 +159,9 @@ deploy_test:
     # cronJobThirteenDays variable
     - oc set env dc/ilmoittamo-test CRON_START_TIME_THIRTEEN_DAYS="30 1 1-30/13 * *"
     # cronJobSixDays variable
-    - oc set env dc/ilmoittamo-dev CRON_START_TIME_SIX_DAYS="30 1 1-30/6 * *"
+    - oc set env dc/ilmoittamo-test CRON_START_TIME_SIX_DAYS="30 1 1-30/6 * *"
     # cronJobThreeDays variable
-    - oc set env dc/ilmoittamo-dev CRON_START_TIME_THREE_DAYS="30 1 1-30/3 * *"
+    - oc set env dc/ilmoittamo-test CRON_START_TIME_THREE_DAYS="30 1 1-30/3 * *"
     # start build process in OpenShift
     - oc start-build ilmoittamo-test --from-dir=. --follow
     # patch openshift buildConfig file
@@ -217,9 +217,9 @@ deploy_prod:
     # cronJobThirteenDays variable
     - oc set env dc/ilmoittamo-prod CRON_START_TIME_THIRTEEN_DAYS="30 1 1-30/13 * *"
     # cronJobSixDays variable
-    - oc set env dc/ilmoittamo-dev CRON_START_TIME_SIX_DAYS="30 1 1-30/6 * *"
+    - oc set env dc/ilmoittamo-prod CRON_START_TIME_SIX_DAYS="30 1 1-30/6 * *"
     # cronJobThreeDays variable
-    - oc set env dc/ilmoittamo-dev CRON_START_TIME_THREE_DAYS="30 1 1-30/3 * *"
+    - oc set env dc/ilmoittamo-prod CRON_START_TIME_THREE_DAYS="30 1 1-30/3 * *"
     # start build process in OpenShift
     - oc start-build ilmoittamo-prod --from-dir=. --follow
     # patch openshift buildConfig file
