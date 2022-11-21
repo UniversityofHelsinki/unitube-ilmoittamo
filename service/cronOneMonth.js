@@ -5,7 +5,7 @@ const databaseService = require("./databaseService");
 
 
 cronJobOneMonth = cron.schedule(process.env.CRON_START_TIME_SIX_DAYS, async() => {
-    console.log('Run CronJob2 job at ', process.env.CRON_START_TIME_SIX_DAYS);
+    console.log('Run cronJobOneMonth job at ', process.env.CRON_START_TIME_SIX_DAYS);
     const videosToSendNotification = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_ONE_MONTH, null, constants.VIDEO_NOTIFIED_INTERVAL_THREE_DAYS, null, null);
     const recipientsMap = await notify.getRecipientsMap(videosToSendNotification);
     await notify.createEmails(recipientsMap);
