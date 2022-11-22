@@ -6,22 +6,49 @@ const apiService = require('./apiService');
 const emailService = require('./emailService');
 const databaseService = require('./databaseService');
 
-const getNotifiedDate = () => {
+const addMonthsToNotifiedDate = (amountOfMonths) => {
     let notifiedDate = new Date();
-    notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.DEFAULT_VIDEO_NOTIFIED_MONTH_AMOUNT);
+    notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + amountOfMonths);
     return notifiedDate;
 };
 
-const getNotifiedDateRange = (notifiedDate, numberOfWeeks) => {
+const addWeeks = (notifiedDate, numberOfWeeks) => {
     notifiedDate.setDate(notifiedDate.getDate() + numberOfWeeks * 7);
     return notifiedDate;
 };
 
-const queryVideos = async() => {
-    const selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
-    const notifiedDate = getNotifiedDate();
-    const startDate = getNotifiedDateRange(new Date(notifiedDate), -1 * constants.DEFAULT_VIDEO_NOTIFIED_WEEK_AMOUNT);
-    const endDate = getNotifiedDateRange(new Date(notifiedDate), constants.DEFAULT_VIDEO_NOTIFIED_WEEK_AMOUNT);
+const addDays = (notifiedDate, numberOfDays) => {
+    notifiedDate.setDate(notifiedDate.getDate() + numberOfDays);
+    return notifiedDate;
+};
+
+const queryVideos = async (months, weeks, days, startingDate, endingDate) => {
+    let selectedVideosToBeNotifiedSQL = null;
+    if (months === constants.VIDEO_NOTIFIED_THREE_MONTHS) {
+        selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotified.sql"), "utf8");
+    } else  if (months === constants.VIDEO_NOTIFIED_ONE_MONTH) {
+        selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotifiedOneMonth.sql"), "utf8");
+    } else  if (startingDate !== null && endingDate !== null) {
+        selectedVideosToBeNotifiedSQL = fs.readFileSync(path.resolve(__dirname, "../sql/getSelectedVideosToBeNotifiedOneWeek.sql"), "utf8");
+    }
+
+
+    const notifiedDate = addMonthsToNotifiedDate(months);
+    let startDate = null;
+    let endDate = null;
+
+    if (weeks !== null) {
+        startDate = addWeeks(new Date(notifiedDate), -1 * weeks);
+        endDate = addWeeks(new Date(notifiedDate), weeks);
+    }
+    if (days !== null) {
+        startDate = addDays(new Date(notifiedDate), -1 * days);
+        endDate = addDays(new Date(notifiedDate), days);
+    }
+    if (startingDate !== null && endingDate !== null) {
+        startDate = addDays(new Date(notifiedDate), startingDate);
+        endDate = addDays(new Date(notifiedDate), endingDate);
+    }
     const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
     return notifiedVideos;
 };
