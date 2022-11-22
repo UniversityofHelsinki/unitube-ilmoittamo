@@ -142,6 +142,5 @@ module.exports = {
     getVideoData : getVideoData,
     createEmails: createEmails,
     getRecipientsMap: getRecipientsMap,
-    getNotifiedDate: getNotifiedDate,
     populateRecipientsMap: populateRecipientsMap
 };
