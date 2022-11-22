@@ -141,5 +141,6 @@ module.exports = {
     getSeriesData : getSeriesData,
     getVideoData : getVideoData,
     createEmails: createEmails,
-    getRecipientsMap: getRecipientsMap
+    getRecipientsMap: getRecipientsMap,
+    populateRecipientsMap: populateRecipientsMap
 };
