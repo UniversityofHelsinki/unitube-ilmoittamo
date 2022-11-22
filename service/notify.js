@@ -67,6 +67,7 @@ const getVideoData = async (video) => {
 const getRecipientsData = async (contributor) => {
     try {
         const recipients = await apiService.getRecipients(contributor);
+        console.log(recipients.data);
         return recipients.data;
     } catch (error) {
       console.log(error, "retrieving contributor : " , contributor);
@@ -85,6 +86,7 @@ const getRecipients = async(series) => {
         const match = constants.IAM_GROUP_PREFIXES.filter(entry => contributor.includes(entry));
         if (match && match.length > 0) {
             let recipientsByGroup = await getRecipientsData(contributor);
+            console.log(recipientsByGroup);
             if (recipientsByGroup && recipientsByGroup.members && recipientsByGroup.members.length > 0) {
                 for (const recipientByGroup of recipientsByGroup.members) {
                     recipients.push(recipientByGroup + constants.EMAIL_POSTFIX);
@@ -122,6 +124,7 @@ const getRecipientsMap = async (videos) => {
         if (videoData && seriesData) {
             if (!isTrashSeries(seriesData)) {
                 const recipients = await getRecipients(seriesData);
+                console.log(recipients);
                 for (const recipient of recipients) {
                     recipientsMap = populateRecipientsMap(recipientsMap, recipient, videoData, seriesData, video);
                 }
