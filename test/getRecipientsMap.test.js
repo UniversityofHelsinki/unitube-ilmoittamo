@@ -29,7 +29,7 @@ describe('video recipients tests', () => {
             data: {
                 identifier: '379fb94c-f194-422a-be6e-fc24f9507b95',
                 title: 'joku sarja',
-                contributors: ['grp-a02700-ohtu', 'sinkkila']
+                contributors: ['grp-mansikanpoimijat', 'mansikka']
             }
         });
 
@@ -44,15 +44,15 @@ describe('video recipients tests', () => {
         apiService.getRecipients.mockResolvedValue({
             status: 200,
             data: {
-                "group": "grp-a02700-ohtu",
+                "group": "grp-mansikanpoimijat",
                 "members": [
-                    "vmheikki",
-                    "tiinasil",
-                    "etarkamo",
-                    "sinkkila",
-                    "anttilan",
-                    "emsu",
-                    "jooaho"
+                    "mustikka",
+                    "mansikka",
+                    "puolukka",
+                    "karpalo",
+                    "mesimarja",
+                    "vadelma",
+                    "mustaherukka"
                 ]
             }
         });
@@ -60,5 +60,6 @@ describe('video recipients tests', () => {
 
         const recipientsInMap = await notify.getRecipientsMap(videosToSendNotification);
         expect(recipientsInMap.size).toEqual(7);
+        expect(recipientsInMap.get("mansikka@ad.helsinki.fi").length).toEqual(1);
     });
 });
