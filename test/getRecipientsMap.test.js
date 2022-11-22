@@ -86,20 +86,37 @@ describe('Recipients tests', () => {
         };
 
 
-        apiService.getSeries.mockResolvedValue({
+        apiService.getSeries.mockResolvedValueOnce({
             status: 200,
             data: {
-                identifier: '379fb94c-f194-422a-be6e-fc24f9507b95',
-                title: 'joku sarja',
+                identifier: '379fb94c-f194-422a-be6e-fc24f966666',
+                title: 'joku sarja 1',
                 contributors: ['grp-mansikanpoimijat', 'mansikka']
             }
         });
 
-        apiService.getEvent.mockResolvedValue({
+        apiService.getSeries.mockResolvedValueOnce({
+            status: 200,
+            data: {
+                identifier: '379fb94c-f194-422a-be6e-fc24f9555555',
+                title: 'joku sarja 2',
+                contributors: ['grp-mansikanpoimijat', 'mansikka']
+            }
+        });
+
+        apiService.getEvent.mockResolvedValueOnce({
             status: 200,
             data: {
                 identifier: 'cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b99',
-                title: 'joku video',
+                title: 'joku video 1',
+            }
+        });
+
+        apiService.getEvent.mockResolvedValueOnce({
+            status: 200,
+            data: {
+                identifier: 'cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b98',
+                title: 'joku video 2',
             }
         });
 
@@ -123,9 +140,11 @@ describe('Recipients tests', () => {
         const recipientsInMap = await notify.getRecipientsMap(videosToSendNotification);
         expect(recipientsInMap.size).toEqual(7);
         expect(recipientsInMap.has("mansikka@ad.helsinki.fi")).toBe(true);
-        expect(recipientsInMap.get('mansikka@ad.helsinki.fi')[0].video.identifier).toEqual('cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b99');
-        expect(recipientsInMap.get('mansikka@ad.helsinki.fi')[0].video.title).toEqual('joku video');
         expect(recipientsInMap.get("mansikka@ad.helsinki.fi").length).toEqual(2);
+        expect(recipientsInMap.get('mansikka@ad.helsinki.fi')[0].video.identifier).toEqual('cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b99');
+        expect(recipientsInMap.get('mansikka@ad.helsinki.fi')[0].video.title).toEqual('joku video 1');
+        expect(recipientsInMap.get('mansikka@ad.helsinki.fi')[1].video.identifier).toEqual('cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b98');
+        expect(recipientsInMap.get('mansikka@ad.helsinki.fi')[1].video.title).toEqual('joku video 2');
     });
 
     it('getRecipientsMap returns only unique recipients and one video if recipient is not found in group', async () => {
