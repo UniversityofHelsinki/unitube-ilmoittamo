@@ -1,4 +1,5 @@
-const axios = require('axios'); // https://www.npmjs.com/package/axios
+const axios = require('axios');
+const logger = require("../utils/winstonLogger");
 require("dotenv").config();
 
 exports.sendMail = async (recipient, payload) => {
@@ -28,6 +29,7 @@ exports.sendMail = async (recipient, payload) => {
         sub: 'Vanheneva tallenne Unitubessa',
         body: message
     });
+    logger.info('mail sent to ', recipient);
     return response.data;
 };
 

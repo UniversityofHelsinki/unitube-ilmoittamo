@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const database = require("./database");
 const constants = require("../utils/constants");
+const logger = require("../utils/winstonLogger");
 
 const updateNotificationSentAt = async(videosToSendNotifications, period) => {
     try {
@@ -21,7 +22,7 @@ const updateNotificationSentAt = async(videosToSendNotifications, period) => {
             }
         }
     } catch (error) {
-        console.log(error);
+        logger.error(error);
     }
 };
 
