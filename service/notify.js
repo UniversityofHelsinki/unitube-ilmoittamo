@@ -5,6 +5,7 @@ const constants = require("../utils/constants");
 const apiService = require('./apiService');
 const emailService = require('./emailService');
 const databaseService = require('./databaseService');
+const logger = require("../utils/winstonLogger");
 
 const addMonthsToNotifiedDate = (amountOfMonths) => {
     let notifiedDate = new Date();
@@ -69,7 +70,7 @@ const getRecipientsData = async (contributor) => {
         const recipients = await apiService.getRecipients(contributor);
         return recipients.data;
     } catch (error) {
-      console.log(error, "retrieving contributor : " , contributor);
+        logger.error(error, "retrieving contributor : " , contributor);
     }
 };
 

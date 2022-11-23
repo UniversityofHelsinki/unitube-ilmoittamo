@@ -12,7 +12,7 @@ const lataamoFormat = printf(({ level, message, label, timestamp }) => {
 
 const logger = createLogger({
     format: combine(
-        label({ label: 'lataamo ilmoittamo' }),
+        label({ label: 'Lataamo ilmoittamo' }),
         timestamp(),
         lataamoFormat
     ),
