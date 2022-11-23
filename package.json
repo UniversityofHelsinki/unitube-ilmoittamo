@@ -21,7 +21,9 @@
     "node-cron": "^3.0.2",
     "pg": "^8.8.0",
     "pg-pool": "^3.5.2",
-    "redis": "^4.3.1"
+    "redis": "^4.3.1",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "jest": "^29.2.1"

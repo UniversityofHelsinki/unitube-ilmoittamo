@@ -1,5 +1,6 @@
 const constants = require('../utils/constants');
 const security = require('./security');
+const logger = require('../utils/winstonLogger');
 
 const getEvent = async (videoId) => {
     try {
@@ -7,6 +8,7 @@ const getEvent = async (videoId) => {
         const response = await security.opencastBase.get(eventsUrl);
         return response;
     } catch (error) {
+        logger.error(error);
         throw error;
     }
 };
@@ -17,6 +19,7 @@ const getSeries = async (seriesId) => {
         const response = await security.opencastBase.get(seriesUrl);
         return response;
     } catch (error) {
+        logger.error(error);
         throw error;
     }
 };
@@ -27,6 +30,7 @@ const getRecipients = async (groupUid) => {
         const response = await security.iamGroupsBase(membersUrl);
         return response;
     } catch (error) {
+        logger.error(error);
         throw error;
     }
 };
