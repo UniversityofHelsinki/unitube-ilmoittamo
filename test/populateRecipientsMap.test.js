@@ -1,7 +1,7 @@
 const notify = require('../service/notify');
 
 let recipientsMap =  new Map();
-let recipient = 'mvheikki@ad.helsinki.fi';
+let recipient = ['mvheikki@ad.helsinki.fi', []];
 let videoData =
     {
         "identifier": "9a00aa43-8526-4fe1-8fbb-2c7927581306",
