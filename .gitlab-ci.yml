@@ -50,8 +50,8 @@ test:
   tags:
     - ohtu-build-1
   script:
-    - npm test
-    - npm run coverage
+    - CI=true npm run test
+    - CI=true npm run coverage
   coverage: /All files\s*\|\s*([\d\.]+)/
 
 # Define the process for deploy stage to development environment
