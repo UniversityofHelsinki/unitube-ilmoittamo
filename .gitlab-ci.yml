@@ -18,6 +18,7 @@ variables:
 stages:
   - setup
   - test
+  - coverage
   - deploy
 
 # Define the process for setup stage
@@ -38,7 +39,6 @@ setup:
 
 # Define the process for test stage
 # Create Postgres container for the tests
-# Run Test Coverage
 test:
   stage: test
   services:
@@ -52,6 +52,14 @@ test:
     - ohtu-build-1
   script:
     - npm test
+
+# Run Test Coverage
+coverage:
+  stage: coverage
+  tags:
+    - ohtu-build-1
+  script:
+    - npm run coverage
 
 # Define the process for deploy stage to development environment
 # Development environment uses https://ocast-devel-a1.it.helsinki.fi (OpenCast test environment)
