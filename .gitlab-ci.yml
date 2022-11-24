@@ -54,7 +54,6 @@ test:
   tags:
     - ohtu-build-1
   script:
-    - CI=true npm run test
     - CI=true npm run coverage
   coverage: /All files\s*\|\s*([\d\.]+)/
 
