@@ -5,9 +5,9 @@ require("dotenv").config();
 exports.sendMail = async (recipient, payload) => {
     const mailPath = process.env.ILMOITTAMO_EMAIL_SENDER_HOST  + '/api/send';
     let iamGroups = [];
-    let message = 'Hyvä vastaanottaja, ' + 'sinulla on vanhenevia videoita : ' + '\n';
+    let message = 'Hyvä vastaanottaja, ' + 'sinulla on vanhenevia videoita: ' + '\n';
     for (const email of payload) {
-        message += 'video: ' + email.video.title + ' sarjasta : ' + email.series.title + ' vanhentuu ' + email.video.archivedDate + '\n';
+        message += 'video: ' + email.video.title + ' sarjasta: ' + email.series.title + ' vanhentuu ' + email.video.archivedDate + '\n';
         if (email.groups && email.groups.length > 0) {
             for (const group of email.groups) {
                 iamGroups.push(group);
