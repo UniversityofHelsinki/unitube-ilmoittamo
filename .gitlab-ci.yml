@@ -3,6 +3,9 @@ image: quay.io/tike/alpine-oc-node
 variables:
   npm_config_cache: "$CI_PROJECT_DIR/.npm"
 
+before_script:
+  - locale
+  - date
 
 # Define a hidden job to be used with extends
 # Better than default to avoid activating cache for all jobs
