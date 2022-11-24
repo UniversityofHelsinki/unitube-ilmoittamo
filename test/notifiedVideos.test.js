@@ -61,6 +61,19 @@ afterAll(async () => {
     jest.clearAllMocks();
 });
 
+const convertDateFormat = (inputDate) => {
+    let date, month, year;
+
+    date = inputDate.getDate();
+    month = inputDate.getMonth() + 1;
+    year = inputDate.getFullYear();
+
+    date = date.toString().padStart(2, '0');
+    month = month.toString().padStart(2, '0');
+
+    return `${date}.${month}.${year}`;
+};
+
 describe('Video 3 months tests', () => {
 
     it('Should Return Two Videos To Be Notified', async () => {
@@ -75,9 +88,8 @@ describe('Video 3 months tests', () => {
         let notifiedDate = new Date();
         notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.VIDEO_NOTIFIED_THREE_MONTHS);
         notifiedDate.setDate(notifiedDate.getDate() - 7);
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
 
-        expect(firstVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
+        expect(firstVideoArchivedDate).toEqual(convertDateFormat(notifiedDate));
         expect(videos.rows[0].video_id).toEqual('a637b65c-56a1-11ed-9b6a-0242ac120002');
     });
 
@@ -88,9 +100,8 @@ describe('Video 3 months tests', () => {
         let notifiedDate = new Date();
         notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.VIDEO_NOTIFIED_THREE_MONTHS);
         notifiedDate.setDate(notifiedDate.getDate() + 7);
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
 
-        expect(secondVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
+        expect(secondVideoArchivedDate).toEqual(convertDateFormat(notifiedDate));
         expect(videos.rows[1].video_id).toEqual('a637b7ba-56a1-11ed-9b6a-0242ac120003');
     });
 
@@ -112,8 +123,8 @@ describe('Video one month tests', () => {
         let notifiedDate = new Date();
         notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK);
         notifiedDate.setDate(notifiedDate.getDate() + 3);
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        expect(firstVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
+
+        expect(firstVideoArchivedDate).toEqual(convertDateFormat(notifiedDate));
         expect(videos.rows[0].video_id).toEqual('499ca72c-64de-11ed-9022-0242ac120002');
     });
 
@@ -123,8 +134,8 @@ describe('Video one month tests', () => {
         let notifiedDate = new Date();
         notifiedDate.setFullYear(notifiedDate.getFullYear(), notifiedDate.getMonth() + constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK);
         notifiedDate.setDate(notifiedDate.getDate() - 1);
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        expect(secondVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
+
+        expect(secondVideoArchivedDate).toEqual(convertDateFormat(notifiedDate));
         expect(videos.rows[1].video_id).toEqual('499cacea-64de-11ed-9022-0242ac120002');
     });
 
@@ -147,8 +158,8 @@ describe('Video one week tests', () => {
         const firstVideoArchivedDate = videos.rows[0].archived_date;
         let notifiedDate = new Date();
         notifiedDate.setDate(notifiedDate.getDate() + 9);
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        expect(firstVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
+
+        expect(firstVideoArchivedDate).toEqual(convertDateFormat(notifiedDate));
         expect(videos.rows[0].video_id).toEqual('fa57ee34-663f-11ed-9022-0242ac120002');
     });
 
@@ -157,8 +168,8 @@ describe('Video one week tests', () => {
         const secondVideoArchivedDate = videos.rows[1].archived_date;
         let notifiedDate = new Date();
         notifiedDate.setDate(notifiedDate.getDate() + 6);
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        expect(secondVideoArchivedDate).toEqual(notifiedDate.toLocaleDateString('fi-FI', options));
+
+        expect(secondVideoArchivedDate).toEqual(convertDateFormat(notifiedDate));
         expect(videos.rows[1].video_id).toEqual('fa57ef92-663f-11ed-9022-0242ac120002');
     });
 
