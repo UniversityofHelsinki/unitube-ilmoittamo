@@ -4,7 +4,6 @@ variables:
   npm_config_cache: "$CI_PROJECT_DIR/.npm"
 
 before_script:
-  - locale
   - date
 
 # Define a hidden job to be used with extends
