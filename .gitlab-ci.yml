@@ -38,7 +38,6 @@ setup:
 
 # Define the process for test stage
 # Create Postgres container for the tests
-# Run Test Coverage
 test:
   stage: test
   services:
@@ -51,7 +50,8 @@ test:
   tags:
     - ohtu-build-1
   script:
-    - npm test
+    - CI=true npm run coverage
+  coverage: /All files\s*\|\s*([\d\.]+)/
 
 # Define the process for deploy stage to development environment
 # Development environment uses https://ocast-devel-a1.it.helsinki.fi (OpenCast test environment)
