@@ -5,7 +5,7 @@ const constants = require("../utils/constants");
 const logger = require("../utils/winstonLogger");
 
 cronJobThreeMonths = cronThreeMonths.schedule(process.env.CRON_START_TIME_THIRTEEN_DAYS, async() => {
-    logger.info('Run cronJobThreeMonths job at ', process.env.CRON_START_TIME_THIRTEEN_DAYS);
+    logger.info(`Run cronJobThreeMonths job at ${process.env.CRON_START_TIME_THIRTEEN_DAYS}`);
     const videosToSendNotification = await notify.getVideosToSendNotification(constants.VIDEO_NOTIFIED_THREE_MONTHS, constants.VIDEO_NOTIFIED_INTERVAL_ONE_WEEK, null, null, null);
     const recipientsMap = await notify.getRecipientsMap(videosToSendNotification);
     await notify.createEmails(recipientsMap);

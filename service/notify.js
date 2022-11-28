@@ -70,7 +70,7 @@ const getRecipientsData = async (contributor) => {
         const recipients = await apiService.getRecipients(contributor);
         return recipients.data;
     } catch (error) {
-        logger.error(error, "retrieving contributor : " , contributor);
+        logger.error(`${error} retrieving contributor : ${contributor}`);
     }
 };
 
