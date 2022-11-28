@@ -29,7 +29,7 @@ exports.sendMail = async (recipient, payload) => {
         sub: 'Vanheneva tallenne Unitubessa',
         body: message
     });
-    logger.info('mail sent to ', recipient);
+    logger.info(`mail sent to ${recipient}`);
     return response.data;
 };
 
