@@ -18,7 +18,7 @@ const updateNotificationSentAt = async(videosToSendNotifications, period) => {
             }
             const updatedVideoEntry = await database.query(updateNotificationSentSQL, [now, video.video_id]);
             if (updatedVideoEntry.rowCount < 1) {
-                console.log("error updating row for video " + video);
+                logger.error(`error updating row for video ${video.video_id}`);
             }
         }
     } catch (error) {
