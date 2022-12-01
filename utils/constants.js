@@ -14,7 +14,7 @@ const IAM_GROUPS_PATH_PREFIX = '/iam/groups/group/';
 const IAM_GROUPS_PATH_POSTFIX = '/members';
 const IAM_GROUP_PREFIXES = ['grp-', 'hy-', 'sys-'];
 const TRASH = 'trash';
-
+const EXPIRATIONMESSAGE = 'Vanhenemisviesti';
 
 module.exports = {
     VIDEO_NOTIFIED_THREE_MONTHS,
@@ -33,5 +33,6 @@ module.exports = {
     IAM_GROUPS_PATH_POSTFIX,
     IAM_GROUP_PREFIXES,
     OPENCAST_SERIES_PATH,
-    TRASH
+    TRASH,
+    EXPIRATIONMESSAGE
 };
