@@ -45,7 +45,7 @@ exports.sendMail = async (recipient, payload) => {
         if (message.indexOf(',', message.length - 1) !== -1) {
             message = message.substring(0, message.length - 1);
         }
-        message += '):\n-' + email.video.title + ' | voimassaolo päättyy ' + email.video.archivedDate + '\n';
+        message += '):\n-' + email.video.title + ' | voimassaolo päättyy / expires on / föråldras ' + email.video.archivedDate + '\n';
     }
 
     //message += 'Mene https://lataamo.helsinki.fi ja tee jotain.';
