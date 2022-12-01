@@ -23,9 +23,8 @@ exports.sendMail = async (recipient, payload) => {
         footer = expiringMessage.footer_fi;
     }
     let iamGroups = [];
-    let message = header +  '\n';//'Hyvä vastaanottaja, ' + 'sinulla on vanhenevia videoita: ' + '\n';
+    let message = header +  '\n';
     for (const email of payload) {
-        //message += 'video: ' + email.video.title + ' sarjasta: ' + email.series.title + ' vanhentuu ' + email.video.archivedDate + '\n';
         message += '\n' + email.series.title + '(';
 
         if (email.groups && email.groups.length > 0) {
@@ -38,7 +37,6 @@ exports.sendMail = async (recipient, payload) => {
 
         if (uniqueGroups && uniqueGroups.length > 0) {
             for (const group of uniqueGroups) {
-                //message += 'Tunnuksesi on lisätty Unitubessa hallinnoijaksi seuraaviin ryhmiin: ' + '\n' + group + '\n';
                 message += group + ',';
             }
         }
@@ -48,7 +46,6 @@ exports.sendMail = async (recipient, payload) => {
         message += '):\n-' + email.video.title + ' | voimassaolo päättyy / expires on / föråldras ' + email.video.archivedDate + '\n';
     }
 
-    //message += 'Mene https://lataamo.helsinki.fi ja tee jotain.';
     message += '\n' + footer;
     const response = await axios.post(mailPath,  {
         to: recipient,
