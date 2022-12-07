@@ -22,7 +22,11 @@ exports.sendMail = async (recipient, payload) => {
     let footer = null;
     if (expiringMessage) {
         header = expiringMessage.header_fi;
+        header += '\n\n' + expiringMessage.header_sv;
+        header += '\n\n' + expiringMessage.header_en;
         footer = expiringMessage.footer_fi;
+        footer += '\n\n' + expiringMessage.footer_sv;
+        footer += '\n\n' + expiringMessage.footer_en;
     }
     let message = header +  '\n';
     for (const email of payload) {
