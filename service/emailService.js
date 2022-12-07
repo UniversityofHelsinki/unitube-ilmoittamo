@@ -14,6 +14,8 @@ const getExpiringMessage = async (name) => {
 }
 
 exports.sendMail = async (recipient, payload) => {
+    let videos = [];
+    let videoGroups = [];
     const mailPath = process.env.ILMOITTAMO_EMAIL_SENDER_HOST + '/api/send';
     let expiringMessage = await getExpiringMessage(constants.EXPIRATIONMESSAGE);
     let header = null;
@@ -22,11 +24,9 @@ exports.sendMail = async (recipient, payload) => {
         header = expiringMessage.header_fi;
         footer = expiringMessage.footer_fi;
     }
-    let iamGroups = [];
     let message = header +  '\n';
     for (const email of payload) {
-        message += '\n' + email.series.title + '(';
-
+        let iamGroups = [];
         if (email.groups && email.groups.length > 0) {
             for (const group of email.groups) {
                 iamGroups.push(group);
@@ -34,18 +34,39 @@ exports.sendMail = async (recipient, payload) => {
         }
 
         let uniqueGroups = [...new Set(iamGroups)];
-
+        let groups = "";
         if (uniqueGroups && uniqueGroups.length > 0) {
             for (const group of uniqueGroups) {
-                message += group + ',';
+                groups += group + ",";
             }
         }
-        if (message.indexOf(',', message.length - 1) !== -1) {
-            message = message.substring(0, message.length - 1);
+        if (groups.indexOf(",", groups.length - 1) !== -1) {
+            groups = groups.substring(0, groups.length - 1);
         }
-        message += '):\n-' + email.video.title + ' | voimassaolo päättyy / expires on / föråldras ' + email.video.archivedDate + '\n';
+        videoGroups.push({ title: email.series.title, groups });
+        videos.push({
+            title: email.series.title,
+            video:
+                "-" + email.video.title + " | voimassaolo päättyy / expires on / föråldras " + email.video.archivedDate,
+        });
     }
+    videos.sort((a, b) => (a.title > b.title ? 1 : b.title > a.title ? -1 : 0));
+    videoGroups.sort((a, b) => a.title > b.title ? 1 : b.title > a.title ? -1 : 0);
+    let videoDataTitle = '';
 
+    videos.forEach((videoData) => {
+        if (videoDataTitle !== videoData.title) {
+            let filteredArray = videoGroups.filter(
+                (item) => item.title === videoData.title
+            );
+            const uniqueGroups = [...new Set(filteredArray.map(item => item.groups))];
+            message += "\n" + videoData.title + " (" + uniqueGroups + "):\n";
+            message += videoData.video + "\n";
+        } else if (videoDataTitle === videoData.title) {
+            message += videoData.video + "\n";
+        }
+        videoDataTitle = videoData.title;
+    });
     message += '\n' + footer;
     const response = await axios.post(mailPath,  {
         to: recipient,
