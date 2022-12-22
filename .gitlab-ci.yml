@@ -100,11 +100,11 @@ deploy_dev:
     - oc set env dc/ilmoittamo-dev IAM_GROUPS_HOST=$IAM_GROUPS_HOST_TEST
     - oc set env --from=secret/ilmoittamo-api-gw-key dc/ilmoittamo-dev
     # cronJobThirteenDays variable
-    - oc set env dc/ilmoittamo-dev CRON_START_TIME_THIRTEEN_DAYS="30 1 1-30/13 * *"
+    - oc set env dc/ilmoittamo-dev CRON_START_TIME_THIRTEEN_DAYS="30 1 1,14,27 * *"
     # cronJobSixDays variable
-    - oc set env dc/ilmoittamo-dev CRON_START_TIME_SIX_DAYS="30 1 1-30/6 * *"
+    - oc set env dc/ilmoittamo-dev CRON_START_TIME_SIX_DAYS="30 1 1,7,13,19,25,31 * *"
     # cronJobThreeDays variable
-    - oc set env dc/ilmoittamo-dev CRON_START_TIME_THREE_DAYS="30 1 1-30/3 * *"
+    - oc set env dc/ilmoittamo-dev CRON_START_TIME_THREE_DAYS="30 1 1,4,7,10,13,16,19,22,25,28,31 * *"
     # start build process in OpenShift
     - oc start-build ilmoittamo-dev --from-dir=. --follow
     # patch openshift buildConfig file
@@ -157,11 +157,11 @@ deploy_test:
     - oc set env dc/ilmoittamo-test IAM_GROUPS_HOST=$IAM_GROUPS_HOST_TEST
     - oc set env --from=secret/ilmoittamo-api-gw-key dc/ilmoittamo-test
     # cronJobThirteenDays variable
-    - oc set env dc/ilmoittamo-test CRON_START_TIME_THIRTEEN_DAYS="30 1 1-30/13 * *"
+    - oc set env dc/ilmoittamo-test CRON_START_TIME_THIRTEEN_DAYS="30 1 1,14,27 * *"
     # cronJobSixDays variable
-    - oc set env dc/ilmoittamo-test CRON_START_TIME_SIX_DAYS="30 1 1-30/6 * *"
+    - oc set env dc/ilmoittamo-test CRON_START_TIME_SIX_DAYS="30 1 1,7,13,19,25,31 * *"
     # cronJobThreeDays variable
-    - oc set env dc/ilmoittamo-test CRON_START_TIME_THREE_DAYS="30 1 1-30/3 * *"
+    - oc set env dc/ilmoittamo-test CRON_START_TIME_THREE_DAYS="30 1 1,4,7,10,13,16,19,22,25,28,31 * *"
     # start build process in OpenShift
     - oc start-build ilmoittamo-test --from-dir=. --follow
     # patch openshift buildConfig file
@@ -215,11 +215,11 @@ deploy_prod:
     - oc set env dc/ilmoittamo-prod IAM_GROUPS_HOST=$IAM_GROUPS_HOST_PROD
     - oc set env --from=secret/ilmoittamo-api-gw-key dc/ilmoittamo-prod
     # cronJobThirteenDays variable
-    - oc set env dc/ilmoittamo-prod CRON_START_TIME_THIRTEEN_DAYS="30 1 1-30/13 * *"
+    - oc set env dc/ilmoittamo-prod CRON_START_TIME_THIRTEEN_DAYS="30 1 1,14,27 * *"
     # cronJobSixDays variable
-    - oc set env dc/ilmoittamo-prod CRON_START_TIME_SIX_DAYS="30 1 1-30/6 * *"
+    - oc set env dc/ilmoittamo-prod CRON_START_TIME_SIX_DAYS="30 1 1,7,13,19,25,31 * *"
     # cronJobThreeDays variable
-    - oc set env dc/ilmoittamo-prod CRON_START_TIME_THREE_DAYS="30 1 1-30/3 * *"
+    - oc set env dc/ilmoittamo-prod CRON_START_TIME_THREE_DAYS="30 1 1,4,7,10,13,16,19,22,25,28,31 * *"
     # start build process in OpenShift
     - oc start-build ilmoittamo-prod --from-dir=. --follow
     # patch openshift buildConfig file
