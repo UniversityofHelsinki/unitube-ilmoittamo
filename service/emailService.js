@@ -20,6 +20,7 @@ exports.sendMail = async (recipient, payload) => {
     let expiringMessage = await getExpiringMessage(constants.EXPIRATIONMESSAGE);
     let header = null;
     let footer = null;
+    let subject = null;
     if (expiringMessage) {
         header = expiringMessage.header_fi;
         header += '\n\n' + expiringMessage.header_sv;
@@ -27,6 +28,7 @@ exports.sendMail = async (recipient, payload) => {
         footer = expiringMessage.footer_fi;
         footer += '\n\n' + expiringMessage.footer_sv;
         footer += '\n\n' + expiringMessage.footer_en;
+        subject = expiringMessage.subject;
     }
     let message = header +  '\n';
     for (const email of payload) {
@@ -51,7 +53,7 @@ exports.sendMail = async (recipient, payload) => {
         videos.push({
             title: email.series.title,
             video:
-                "-" + email.video.title + " | voimassaolo päättyy / expires on / föråldras " + email.video.archivedDate,
+                "-" + email.video.title + " | voimassaolo päättyy / expires on / går ut " + email.video.archivedDate,
         });
     }
     videos.sort((a, b) => (a.title > b.title ? 1 : b.title > a.title ? -1 : 0));
@@ -74,7 +76,7 @@ exports.sendMail = async (recipient, payload) => {
     message += '\n' + footer;
     const response = await axios.post(mailPath,  {
         to: recipient,
-        sub: expiringMessage.subject,
+        sub: subject,
         body: message
     });
     logger.info(`mail sent to ${recipient}`);
