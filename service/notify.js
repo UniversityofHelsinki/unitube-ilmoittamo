@@ -50,7 +50,7 @@ const queryVideos = async (months, weeks, days, startingDate, endingDate) => {
         startDate = addDays(new Date(notifiedDate), startingDate);
         endDate = addDays(new Date(notifiedDate), endingDate);
     }
-    const notifiedVideos = database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
+    const notifiedVideos = await database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
     return notifiedVideos;
 };
 
