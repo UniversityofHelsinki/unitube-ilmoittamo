@@ -74,7 +74,7 @@ exports.sendMail = async (recipient, payload) => {
     message += '\n' + footer;
     const response = await axios.post(mailPath,  {
         to: recipient,
-        sub: 'Vanheneva tallenne Unitubessa',
+        sub: expiringMessage.subject,
         body: message
     });
     logger.info(`mail sent to ${recipient}`);
