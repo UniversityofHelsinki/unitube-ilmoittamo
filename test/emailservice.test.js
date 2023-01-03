@@ -33,6 +33,22 @@ beforeAll(async () => {
 
 test('sending mail returns create status', async () => {
     await client.query('CREATE TEMPORARY TABLE email_templates(id SERIAL NOT NULL, name VARCHAR(255) UNIQUE NOT NULL, description VARCHAR(255), subject VARCHAR(255), header_fi TEXT, footer_fi TEXT, header_sv TEXT, footer_sv TEXT, header_en TEXT, footer_en TEXT, modified TIMESTAMP, PRIMARY KEY(id))');
+    await wait(100);
+    await client.query('INSERT INTO email_templates (id, name, description, subject, header_fi, footer_fi, header_sv, footer_sv, header_en, footer_en, modified) ' +
+        'VALUES (\'1\', \'Vanhenemisviesti\', \'Viesti tallenteiden vanhenemisesta\', \'Unitube: sinulla on vanhenevia tallenteita / you have expiring videos / du har videon som går ut\n' +
+        '\n' +
+        'Scroll down for English / För svenska, se nedan\n\', \'Hei!\n' +
+        '\n' +
+        'Saat tämän viestin, koska olet Helsingin yliopiston Unitube-palvelussa yhden tai useamman vanhenevan videotallenteen hallinnoija.\n' +
+        '\n' +
+        'Olet tallenteen hallinnoija silloin, jos olet itse lisännyt ja julkaissut videon jossakin Unitube-videosarjassa. Voit olla hallinnoija myös siinä tapauksessa, että joku muu on merkinnyt sinut tai ryhmän, johon kuulut, hallinnoijaksi johonkin tallennesarjaan Unitube-lataamopalvelussa.\n' +
+        '\n' +
+        'Seuraavan tai seuraavien Unitube-tallenteiden voimassaolo on päättymässä pian:\n\', \'Kaikilla Unitube-tallenteilla on voimassaoloaika, jonka jälkeen ne poistuvat palvelusta. Voimassaoloaika on aina korkeintaan kolme vuotta kerrallaan. Jos haluat, voit jatkaa itse hallinnoimiesi tallenteiden voimassaoloa Unitube-lataamossa osoitteessa https://lataamo.helsinki.fi.\n' +
+        '\n' +
+        'Voit lajitella hallinnoimasi tallenteet Unitube-lataamon voimassaolon mukaan. Klikkaamalla tallennetta pääset muokkaamaan sen asetuksia kuten voimassaolopäivää. Voit myös asettaa kerralla saman voimassaolopäivän kaikille yhden hallinnoimasi videosarjasi tallenteille sarjavälilehdeltä.\n' +
+        '\n' +
+        'Lisää ohjeita ja yhteystietoja:\n' +
+        'https://helpdesk.it.helsinki.fi/help/10654\', \'header_sv\', \'footer_sv\', \'header_en\', \'footer_en\',  \'2008-01-01\'::date)');
 
     axios.post.mockResolvedValue({
         data: {
