@@ -26,6 +26,13 @@ const updateNotificationSentAt = async(videosToSendNotifications, period) => {
     }
 };
 
+const getEmailTemplate = async(name) => {
+    const getEmailTemplates = fs.readFileSync(path.resolve(__dirname, "../sql/getEmailTemplates.sql"), "utf8");
+    const resp = await database.query(getEmailTemplates, [name]);
+    return resp;
+}
+
+
 const updateSkipEmailStatus = async(videoId) => {
     const skipEmailStatus = true;
     const updateEmailSendStatusSQL = fs.readFileSync(path.resolve(__dirname, "../sql/updateEmailSendStatus.sql"), "utf8");
@@ -35,7 +42,8 @@ const updateSkipEmailStatus = async(videoId) => {
 
 module.exports = {
     updateNotificationSentAt : updateNotificationSentAt,
-    updateSkipEmailStatus : updateSkipEmailStatus
+    updateSkipEmailStatus : updateSkipEmailStatus,
+    getEmailTemplate : getEmailTemplate
 };
 
 
