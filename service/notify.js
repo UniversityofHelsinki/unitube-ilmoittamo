@@ -5,7 +5,8 @@ const constants = require("../utils/constants");
 const apiService = require('./apiService');
 const emailService = require('./emailService');
 const databaseService = require('./databaseService');
-const logger = require("../utils/winstonLogger");
+const logger = require('../utils/winstonLogger');
+const validator = require("email-validator");
 
 const addMonthsToNotifiedDate = (amountOfMonths) => {
     let notifiedDate = new Date();
@@ -76,7 +77,11 @@ const getRecipientsData = async (contributor) => {
 
 const createEmails = async (recipientsMap) => {
     for (const [recipient, payload] of recipientsMap) {
-        await emailService.sendMail(recipient, payload);
+        if (recipient && validator.validate(recipient)) {
+            await emailService.sendMail(recipient, payload);
+        } else {
+            logger.info(`incorrect email : ${recipient}`);
+        }
     }
 };
 
@@ -88,20 +93,22 @@ const getRecipients = async(series) => {
             let recipientsByGroup = await getRecipientsData(contributor);
             if (recipientsByGroup && recipientsByGroup.members && recipientsByGroup.members.length > 0) {
                 for (const recipientByGroup of recipientsByGroup.members) {
-                    const recipientAddress = recipientByGroup + constants.EMAIL_POSTFIX;
-                    if (!recipients.has(recipientAddress)) {
-                        let payload = [];
-                        payload.push(contributor);
-                        recipients.set(recipientAddress, payload);
-                    } else {
-                        let payload = recipients.get(recipientAddress);
-                        payload.push(contributor);
-                        recipients[contributor] = payload;
+                    if (recipientByGroup.email) {
+                        const recipientAddress = recipientByGroup.email;
+                        if (!recipients.has(recipientAddress)) {
+                            let payload = [];
+                            payload.push(contributor);
+                            recipients.set(recipientAddress, payload);
+                        } else {
+                            let payload = recipients.get(recipientAddress);
+                            payload.push(contributor);
+                            recipients[contributor] = payload;
+                        }
                     }
                 }
             }
         } else {
-            let recipientAddress = contributor + constants.EMAIL_POSTFIX;
+            let recipientAddress = contributor; // change this to fetch contrubutors email address from api
             recipients.set(recipientAddress, []);
         }
     }
@@ -136,7 +143,6 @@ const getRecipientsMap = async (videos) => {
                 const recipients = await getRecipients(seriesData);
                 for (const recipient of recipients.entries()) {
                     recipientsMap = populateRecipientsMap(recipientsMap, recipient, videoData, seriesData, video);
-
                 }
             } else {
                 await databaseService.updateSkipEmailStatus(videoData.identifier);
