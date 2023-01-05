@@ -41,7 +41,7 @@ describe('Recipients tests', () => {
             }
         });
 
-        apiService.getRecipients.mockResolvedValue({
+        apiService.getRecipientsFromGroup.mockResolvedValue({
             status: 200,
             data: {
                 "group": "grp-mansikanpoimijat",
@@ -141,7 +141,7 @@ describe('Recipients tests', () => {
             }
         });
 
-        apiService.getRecipients.mockResolvedValue({
+        apiService.getRecipientsFromGroup.mockResolvedValue({
             status: 200,
             data: {
                 "group": "grp-mansikanpoimijat",
@@ -234,7 +234,7 @@ describe('Recipients tests', () => {
             }
         });
 
-        apiService.getRecipients.mockResolvedValue({
+        apiService.getRecipientsFromGroup.mockResolvedValue({
             status: 200,
             data: {
                 "group": "grp-mansikanpoimijat",

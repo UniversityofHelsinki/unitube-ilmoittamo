@@ -7,6 +7,7 @@ const emailService = require('./emailService');
 const databaseService = require('./databaseService');
 const logger = require('../utils/winstonLogger');
 const validator = require("email-validator");
+const {getRecipientsByUserNames} = require("./apiService");
 
 const addMonthsToNotifiedDate = (amountOfMonths) => {
     let notifiedDate = new Date();
@@ -66,12 +67,21 @@ const getVideoData = async (video) => {
     return videoResponse.data;
 };
 
-const getRecipientsData = async (contributor) => {
+const getRecipientsDataFromGroup = async (contributor) => {
     try {
-        const recipients = await apiService.getRecipients(contributor);
+        const recipients = await apiService.getRecipientsFromGroup(contributor);
         return recipients.data;
     } catch (error) {
-        logger.error(`${error} retrieving contributor : ${contributor}`);
+        logger.error(`${error} retrieving contributor from group : ${contributor}`);
+    }
+};
+
+const getRecipientsData = async (contributors) => {
+    try {
+        const recipients = await apiService.getRecipientsByUserNames(contributors);
+        return recipients.data;
+    } catch (error) {
+        logger.error(`${error} retrieving contributors : ${contributors}`);
     }
 };
 
@@ -85,33 +95,49 @@ const createEmails = async (recipientsMap) => {
     }
 };
 
+const getRecipientsByGroup = async (contributor, recipients) => {
+    let recipientsByGroup = await getRecipientsDataFromGroup(contributor);
+    if (recipientsByGroup && recipientsByGroup.members && recipientsByGroup.members.length > 0) {
+        for (const recipientByGroup of recipientsByGroup.members) {
+            if (recipientByGroup.email) {
+                const recipientAddress = recipientByGroup.email;
+                if (!recipients.has(recipientAddress)) {
+                    let payload = [];
+                    payload.push(contributor);
+                    recipients.set(recipientAddress, payload);
+                } else {
+                    let payload = recipients.get(recipientAddress);
+                    payload.push(contributor);
+                    recipients[contributor] = payload;
+                }
+            }
+        }
+    }
+}
+
+const getDirectlyAddedRecipients = async (userNamesAddedDirectly, recipients) => {
+    if (userNamesAddedDirectly && userNamesAddedDirectly.length > 0) {
+        let directlyAddedRecipientsData = await getRecipientsData(userNamesAddedDirectly);
+        if (directlyAddedRecipientsData && directlyAddedRecipientsData.length > 0) {
+            for (const directlyAddedRecipientData of directlyAddedRecipientsData) {
+                recipients.set(directlyAddedRecipientData.email, []);
+            }
+        }
+    }
+}
+
 const getRecipients = async(series) => {
     let recipients = new Map();
+    let userNamesAddedDirectly = [];
     for (const contributor of series.contributors) {
         const match = constants.IAM_GROUP_PREFIXES.filter(entry => contributor.includes(entry));
         if (match && match.length > 0) {
-            let recipientsByGroup = await getRecipientsData(contributor);
-            if (recipientsByGroup && recipientsByGroup.members && recipientsByGroup.members.length > 0) {
-                for (const recipientByGroup of recipientsByGroup.members) {
-                    if (recipientByGroup.email) {
-                        const recipientAddress = recipientByGroup.email;
-                        if (!recipients.has(recipientAddress)) {
-                            let payload = [];
-                            payload.push(contributor);
-                            recipients.set(recipientAddress, payload);
-                        } else {
-                            let payload = recipients.get(recipientAddress);
-                            payload.push(contributor);
-                            recipients[contributor] = payload;
-                        }
-                    }
-                }
-            }
+            await getRecipientsByGroup(contributor, recipients);
         } else {
-            let recipientAddress = contributor; // change this to fetch contrubutors email address from api
-            recipients.set(recipientAddress, []);
+            userNamesAddedDirectly.push(contributor);
         }
     }
+    await getDirectlyAddedRecipients(userNamesAddedDirectly, recipients);
     return recipients;
 };
 

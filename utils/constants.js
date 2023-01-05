@@ -12,6 +12,7 @@ const OPENCAST_SERIES_PATH = '/api/series/';
 const IAM_GROUPS_PATH_PREFIX = '/iam/groups/group/';
 const IAM_GROUPS_PATH_POSTFIX = '/members';
 const IAM_GROUP_PREFIXES = ['grp-', 'hy-', 'sys-'];
+const IAM_ACCOUNT_EMAIL = '/iam/groups/account/emails';
 const TRASH = 'trash';
 const EXPIRATIONMESSAGE = 'Vanhenemisviesti';
 
@@ -32,5 +33,6 @@ module.exports = {
     IAM_GROUP_PREFIXES,
     OPENCAST_SERIES_PATH,
     TRASH,
-    EXPIRATIONMESSAGE
+    EXPIRATIONMESSAGE,
+    IAM_ACCOUNT_EMAIL
 };

@@ -24,7 +24,7 @@ const getSeries = async (seriesId) => {
     }
 };
 
-const getRecipients = async (groupUid) => {
+const getRecipientsFromGroup = async (groupUid) => {
     try {
         const membersUrl = constants.IAM_GROUPS_PATH_PREFIX + groupUid + constants.IAM_GROUPS_PATH_POSTFIX;
         const response = await security.iamGroupsBase(membersUrl);
@@ -35,9 +35,21 @@ const getRecipients = async (groupUid) => {
     }
 };
 
+const getRecipientsByUserNames = async (contributors) => {
+    try {
+        const membersUrl = constants.IAM_ACCOUNT_EMAIL;
+        const response = await security.iamGroupsBase.post(membersUrl, contributors);
+        return response;
+    } catch (error) {
+        logger.error(error);
+        throw error;
+    }
+};
+
 module.exports = {
     getEvent : getEvent,
     getSeries : getSeries,
-    getRecipients : getRecipients
+    getRecipientsFromGroup : getRecipientsFromGroup,
+    getRecipientsByUserNames : getRecipientsByUserNames
 };
 
