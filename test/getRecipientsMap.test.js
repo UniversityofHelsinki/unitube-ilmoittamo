@@ -78,9 +78,20 @@ describe('Recipients tests', () => {
             }
         });
 
+        apiService.getRecipientsByUserNames.mockResolvedValue({
+            status: 200,
+            data:
+                [
+                    {
+                        "username" : "mansikka",
+                        "email" :  "marja.mansikka@mansikanpoimijat.fi"
+                    }
+                ]
+        });
+
 
         const recipientsInMap = await notify.getRecipientsMap(videosToSendNotification);
-        //expect(recipientsInMap.size).toEqual(7);
+        expect(recipientsInMap.size).toEqual(7);
         expect(recipientsInMap.has("marja.mansikka@mansikanpoimijat.fi")).toBe(true);
         expect(recipientsInMap.get("marja.mansikka@mansikanpoimijat.fi").length).toEqual(1);
         expect(recipientsInMap.get('marja.mansikka@mansikanpoimijat.fi')[0].video.identifier).toEqual('cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b99');
@@ -178,9 +189,20 @@ describe('Recipients tests', () => {
             }
         });
 
+        apiService.getRecipientsByUserNames.mockResolvedValue({
+            status: 200,
+            data:
+                [
+                    {
+                        "username" : "mansikka",
+                        "email" :  "marja.mansikka@mansikanpoimijat.fi"
+                    }
+                ]
+        });
+
 
         const recipientsInMap = await notify.getRecipientsMap(videosToSendNotification);
-        //expect(recipientsInMap.size).toEqual(7);
+        expect(recipientsInMap.size).toEqual(7);
         expect(recipientsInMap.has("marja.mustikka@mansikanpoimijat.fi")).toBe(true);
         expect(recipientsInMap.get("marja.mustikka@mansikanpoimijat.fi").length).toEqual(2);
         expect(recipientsInMap.get('marja.mustikka@mansikanpoimijat.fi')[0].video.identifier).toEqual('cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b99');
@@ -221,7 +243,7 @@ describe('Recipients tests', () => {
             status: 200,
             data: {
                 identifier: '379fb94c-f194-422a-be6e-fc24f9507b98',
-                title: 'joku sarja',
+                title: 'joku sarja 2',
                 contributors: ['grp-mansikanpoimijat', 'mansikka', 'variksenmarja']
             }
         });
@@ -271,17 +293,45 @@ describe('Recipients tests', () => {
             }
         });
 
+        apiService.getRecipientsByUserNames.mockResolvedValueOnce({
+            status: 200,
+            data:
+                [
+                    {
+                        "username" : "mansikka",
+                        "email" :  "marja.mansikka@mansikanpoimijat.fi"
+                    }
+                ]
+        });
+
+        apiService.getRecipientsByUserNames.mockResolvedValueOnce({
+            status: 200,
+            data:
+                [
+                    {
+                        "username" : "mansikka",
+                        "email" :  "marja.mansikka@mansikanpoimijat.fi"
+                    },
+                    {
+                        "username": "variksenmarja",
+                        "email" : "marja.variksenmarja@mansikanpoimijat.fi"
+                    }
+                ]
+        });
 
         const recipientsInMap = await notify.getRecipientsMap(videosToSendNotification);
-        //expect(recipientsInMap.size).toEqual(8);
+        expect(recipientsInMap.size).toEqual(8);
         expect(recipientsInMap.has("marja.mansikka@mansikanpoimijat.fi")).toBe(true);
         expect(recipientsInMap.get('marja.mansikka@mansikanpoimijat.fi')[0].video.identifier).toEqual('cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b99');
         expect(recipientsInMap.get('marja.mansikka@mansikanpoimijat.fi')[0].video.title).toEqual('joku video');
         expect(recipientsInMap.get("marja.mansikka@mansikanpoimijat.fi").length).toEqual(2);
-        //expect(recipientsInMap.has("variksenmarja@ad.helsinki.fi")).toBe(true);
-        //expect(recipientsInMap.get('variksenmarja@ad.helsinki.fi')[0].video.identifier).toEqual('cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b99');
-        //expect(recipientsInMap.get('variksenmarja@ad.helsinki.fi')[0].video.title).toEqual('joku video');
-        //expect(recipientsInMap.get("variksenmarja@ad.helsinki.fi").length).toEqual(1);
+        expect(recipientsInMap.get("marja.mansikka@mansikanpoimijat.fi")[0].series.title).toEqual('joku sarja');
+        expect(recipientsInMap.get("marja.mansikka@mansikanpoimijat.fi")[1].series.title).toEqual('joku sarja 2');
+        expect(recipientsInMap.has("marja.variksenmarja@mansikanpoimijat.fi")).toBe(true);
+        expect(recipientsInMap.get('marja.variksenmarja@mansikanpoimijat.fi')[0].video.identifier).toEqual('cda5d8bf-eb6d-41a6-b7ae-6271f8ab0b99');
+        expect(recipientsInMap.get('marja.variksenmarja@mansikanpoimijat.fi')[0].video.title).toEqual('joku video');
+        expect(recipientsInMap.get("marja.variksenmarja@mansikanpoimijat.fi").length).toEqual(1);
+        expect(recipientsInMap.get("marja.variksenmarja@mansikanpoimijat.fi")[0].series.title).toEqual('joku sarja 2');
     });
 
 });
