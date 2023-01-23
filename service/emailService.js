@@ -42,11 +42,11 @@ exports.sendMail = async (recipient, payload) => {
         let groups = "";
         if (uniqueGroups && uniqueGroups.length > 0) {
             for (const group of uniqueGroups) {
-                groups += group + ",";
+                groups += group + ", ";
             }
         }
-        if (groups.indexOf(",", groups.length - 1) !== -1) {
-            groups = groups.substring(0, groups.length - 1);
+        if (groups.indexOf(", ", groups.length - 2) !== -1) {
+            groups = groups.substring(0, groups.length - 2);
         }
         videoGroups.push({ title: email.series.title, groups });
         videos.push({
