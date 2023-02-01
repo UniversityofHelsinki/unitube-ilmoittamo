@@ -35,7 +35,7 @@ app.get('/cronOneMonth', async(req, res) => {
 
 app.get('/cronOneWeek', async(req, res) => {
     await cronOneWeek.runOneWeekJob();
-    res.send('Three Months Job Executed');
+    res.send('One Week Job Executed');
 });
 
 database.query('SELECT NOW()', (err, res) => {
