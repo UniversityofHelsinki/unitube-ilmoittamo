@@ -110,6 +110,8 @@ deploy_dev:
     # patch openshift buildConfig file
     - oc patch bc/ilmoittamo-dev --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
     - oc patch bc/ilmoittamo-dev --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
+    # set pod memory quota to 100 MB and limit to 500 MB
+    - oc set resources dc/ilmoittamo-dev --limits=memory=500Mi --requests=memory=100Mi
 
 # Test environment uses https://ocast-a1-test.it.helsinki.fi (OpenCast devel environment, used for Version Switching)
 deploy_test:
@@ -167,6 +169,8 @@ deploy_test:
     # patch openshift buildConfig file
     - oc patch bc/ilmoittamo-test --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
     - oc patch bc/ilmoittamo-test --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
+    # set pod memory quota to 100 MB and limit to 500 MB
+    - oc set resources dc/ilmoittamo-test --limits=memory=500Mi --requests=memory=100Mi
 
 # Production environment uses https://webcast.it.helsinki.fi (OpenCast production environment) 
 deploy_prod:
@@ -225,3 +229,5 @@ deploy_prod:
     # patch openshift buildConfig file
     - oc patch bc/ilmoittamo-prod --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
     - oc patch bc/ilmoittamo-prod --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
+    # set pod memory quota to 100 MB and limit to 500 MB
+    - oc set resources dc/ilmoittamo-prod --limits=memory=500Mi --requests=memory=100Mi

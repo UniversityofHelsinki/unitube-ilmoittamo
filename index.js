@@ -23,6 +23,21 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+app.get('/cronThreeMonths', async(req, res) => {
+    await cronThreeMonths.runThreeMonthsJob();
+    res.send('Three Months Job Executed');
+});
+
+app.get('/cronOneMonth', async(req, res) => {
+    await cronOneMonth.runOneMonthJob();
+    res.send('One Month Job Executed');
+});
+
+app.get('/cronOneWeek', async(req, res) => {
+    await cronOneWeek.runOneWeekJob();
+    res.send('One Week Job Executed');
+});
+
 database.query('SELECT NOW()', (err, res) => {
     console.log(err ? "errors: " + err : 'Postgres client connected ' , res.rows[0]);
 });
