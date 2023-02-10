@@ -24,7 +24,7 @@ stages:
 setup:
   stage: setup
   tags:
-    - ohtu-build-1
+    - ohtu-build-3
   script:
     - npm ci
   extends: .dependencies_cache
@@ -48,7 +48,7 @@ test:
     POSTGRES_PASSWORD: ${PASSWORD}
     POSTGRES_HOST_AUTH_METHOD: trust
   tags:
-    - ohtu-build-1
+    - ohtu-build-3
   script:
     - CI=true npm run coverage
   coverage: /All files\s*\|\s*([\d\.]+)/
@@ -58,7 +58,7 @@ test:
 deploy_dev:
   stage: deploy
   tags:
-    - ohtu-build-1
+    - ohtu-build-3
   environment:
     name: development
   only:
@@ -117,7 +117,7 @@ deploy_dev:
 deploy_test:
   stage: deploy
   tags:
-    - ohtu-build-1
+    - ohtu-build-3
   environment:
     name: test
   only:
@@ -176,7 +176,7 @@ deploy_test:
 deploy_prod:
   stage: deploy
   tags:
-    - ohtu-build-1
+    - ohtu-build-3
   environment:
     name: production
   only:
