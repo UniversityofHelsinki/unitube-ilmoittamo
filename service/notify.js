@@ -88,9 +88,15 @@ const getRecipientsData = async (contributors) => {
 const createEmails = async (recipientsMap) => {
     for (const [recipient, payload] of recipientsMap) {
         if (recipient && validator.validate(recipient)) {
-            await emailService.sendMail(recipient, payload);
+            try {
+                await emailService.sendMail(recipient, payload);
+            } catch (error) {
+                logger.error(`sending email to recipient: ${recipient} failed with error: ${error}`);
+                continue;
+            }
         } else {
-            logger.info(`incorrect email : ${recipient}`);
+            logger.error(`incorrect email : ${recipient}`);
+            continue;
         }
     }
 };
