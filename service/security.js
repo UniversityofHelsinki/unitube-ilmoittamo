@@ -1,4 +1,5 @@
 const adminHost = process.env.ILMOITTAMO_OPENCAST_HOST;
+const emailServiceHost = process.env.ILMOITTAMO_EMAIL_SENDER_HOST;
 const username = process.env.ILMOITTAMO_OPENCAST_USER;
 const password = process.env.ILMOITTAMO_OPENCAST_PASS;
 const iamGroupsHost = process.env.IAM_GROUPS_HOST;
@@ -6,6 +7,10 @@ const iamGroupsApiKey = process.env.IAM_GROUPS_API_KEY;
 const userpass = Buffer.from(`${username}:${password}`).toString('base64');
 const auth = `Basic ${userpass}`;
 const axios = require('axios');
+
+const emailServiceBase = axios.create({
+    baseURL :emailServiceHost
+})
 
 const opencastBase = axios.create({
     baseURL: adminHost,
@@ -19,5 +24,6 @@ const iamGroups = axios.create({
 
 module.exports = {
     opencastBase : opencastBase,
-    iamGroupsBase : iamGroups
+    iamGroupsBase : iamGroups,
+    emailServiceBase : emailServiceBase
 };

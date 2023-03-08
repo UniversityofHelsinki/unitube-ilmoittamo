@@ -195,6 +195,8 @@ const getRecipientsMap = async (videos) => {
             }
         } catch (error) {
             logger.error(`${error}`);
+            await databaseService.updateErrorDate(video.video_id);
+            await databaseService.insertErrorLog(404, error.message, video.video_id , null, null, null, null);
             await databaseService.updateSkipEmailStatus(video.video_id);
             continue;
         }
