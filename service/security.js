@@ -9,10 +9,7 @@ const axios = require('axios');
 
 const opencastBase = axios.create({
     baseURL: adminHost,
-    headers: {'authorization': auth},
-    validateStatus: () => { // https://github.com/axios/axios/issues/1143
-        return true;        // without this axios might throw error on non 200 responses
-    }
+    headers: {'authorization': auth}
 });
 
 const iamGroups = axios.create({
