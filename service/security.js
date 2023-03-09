@@ -10,7 +10,7 @@ const axios = require('axios');
 
 const emailServiceBase = axios.create({
     baseURL :emailServiceHost
-})
+});
 
 const opencastBase = axios.create({
     baseURL: adminHost,
