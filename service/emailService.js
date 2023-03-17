@@ -1,7 +1,7 @@
-const axios = require('axios');
 const logger = require("../utils/winstonLogger");
 const databaseService = require('./databaseService');
 const constants = require("../utils/constants");
+const security = require("./security");
 require("dotenv").config();
 
 const getExpiringMessage = async (name) => {
@@ -17,7 +17,6 @@ exports.sendMail = async (recipient, payload) => {
     try {
         let videos = [];
         let videoGroups = [];
-        const mailPath = process.env.ILMOITTAMO_EMAIL_SENDER_HOST + '/api/send';
         let expiringMessage = await getExpiringMessage(constants.EXPIRATIONMESSAGE);
         let part_fi = null;
         let part_sv = null;
@@ -83,7 +82,7 @@ exports.sendMail = async (recipient, payload) => {
         part_en += '\n' + expiringVideosList + '\n' + expiringMessage.footer_en;
         message += part_fi + '\n\n' + part_sv + '\n\n' + part_en;
 
-        const response = await axios.post(mailPath,  {
+        const response = await security.emailServiceBase.post('/api/send',  {
             to: recipient,
             sub: subject,
             body: message

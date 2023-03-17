@@ -14,7 +14,7 @@ ILMOITTAMO_OPENCAST_HOST = (OpenCast development url)
 ILMOITTAMO_OPENCAST_USER = (Local Opencast user)  
 ILMOITTAMO_OPENCAST_PASS = (Local Opencast password)  
 
-ILMOITTAMO_EMAIL_SENDER_HOST = http://localhost:3003
+ILMOITTAMO_EMAIL_SENDER_HOST = http://localhost:3003 or http://127.0.0.1:3003 if localhost address does not work (Node switched DNS resolution order since version 17 ->)
 IAM_GROUPS_HOST = https://gw-api-test.it.helsinki.fi
 IAM_GROUPS_API_KEY = xxxxxxxxxxxxxxxxxxxx
 

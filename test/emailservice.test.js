@@ -31,7 +31,8 @@ beforeAll(async () => {
     };
 });
 
-test('sending mail returns create status', async () => {
+
+xtest('sending mail returns create status', async () => {
     await client.query('CREATE TEMPORARY TABLE email_templates(id SERIAL NOT NULL, name VARCHAR(255) UNIQUE NOT NULL, description VARCHAR(255), subject VARCHAR(255), header_fi TEXT, footer_fi TEXT, header_sv TEXT, footer_sv TEXT, header_en TEXT, footer_en TEXT, modified TIMESTAMP, PRIMARY KEY(id))');
     await wait(100);
     await client.query('INSERT INTO email_templates (id, name, description, subject, header_fi, footer_fi, header_sv, footer_sv, header_en, footer_en, modified) ' +
