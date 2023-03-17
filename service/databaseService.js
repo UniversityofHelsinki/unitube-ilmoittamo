@@ -40,10 +40,25 @@ const updateSkipEmailStatus = async(videoId) => {
     return updatedVideoEntry.rowCount;
 };
 
+const updateErrorDate = async(videoId) => {
+    const updateErrorDateSQL = fs.readFileSync(path.resolve(__dirname, "../sql/updateErrorDate.sql"), "utf8");
+    const now = new Date();
+    const updatedVideoEntry = await database.query(updateErrorDateSQL, [now, videoId]);
+    return updatedVideoEntry.rowCount;
+};
+
+const insertErrorLog = async(statusCode, message, videoId, videoName, originalSeriesId, originalSeriesName, archivedSeriesId) => {
+    const insertErrorLogSQL = fs.readFileSync(path.resolve(__dirname, "../sql/insertErrorLog.sql"), "utf8");
+    const updatedVideoEntry = await database.query(insertErrorLogSQL, [statusCode, message, videoId, videoName, originalSeriesId, originalSeriesName, archivedSeriesId]);
+    return updatedVideoEntry.rowCount;
+};
+
 module.exports = {
     updateNotificationSentAt : updateNotificationSentAt,
     updateSkipEmailStatus : updateSkipEmailStatus,
-    getEmailTemplate : getEmailTemplate
+    getEmailTemplate : getEmailTemplate,
+    updateErrorDate : updateErrorDate,
+    insertErrorLog : insertErrorLog
 };
 
 

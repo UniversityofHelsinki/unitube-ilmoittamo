@@ -57,14 +57,24 @@ const queryVideos = async (months, weeks, days, startingDate, endingDate) => {
 };
 
 const getSeriesData = async (seriesId) => {
-    const seriesData = await apiService.getSeries(seriesId);
-    return seriesData.data;
+    try {
+        const seriesData = await apiService.getSeries(seriesId);
+        return seriesData.data;
+    } catch (error) {
+        logger.error(`${error} retrieving series data with id  : ${seriesId}`);
+        throw error;
+    }
 };
 
 const getVideoData = async (video) => {
-    const videoId = video.video_id;
-    const videoResponse = await apiService.getEvent(videoId);
-    return videoResponse.data;
+    try {
+        const videoId = video.video_id;
+        const videoResponse = await apiService.getEvent(videoId);
+        return videoResponse.data;
+    } catch (error) {
+        logger.error(`${error} retrieving video data with id  : ${video.video_id}`);
+        throw error;
+    }
 };
 
 const getRecipientsDataFromGroup = async (contributor) => {
@@ -168,19 +178,27 @@ const populateRecipientsMap = (recipientsMap, recipientEntry, videoData, seriesD
 const getRecipientsMap = async (videos) => {
     let recipientsMap = new Map();
     for (const video of videos.rows) {
-        const videoData = await getVideoData(video);
-        const seriesData = await getSeriesData(videoData.is_part_of);
-        if (videoData && seriesData) {
-            if (!isTrashSeries(seriesData)) {
-                const recipients = await getRecipients(seriesData);
-                for (const recipient of recipients.entries()) {
-                    recipientsMap = populateRecipientsMap(recipientsMap, recipient, videoData, seriesData, video);
+        try {
+            const videoData = await getVideoData(video);
+            const seriesData = await getSeriesData(videoData.is_part_of);
+            if (videoData && seriesData) {
+                if (!isTrashSeries(seriesData)) {
+                    const recipients = await getRecipients(seriesData);
+                    for (const recipient of recipients.entries()) {
+                        recipientsMap = populateRecipientsMap(recipientsMap, recipient, videoData, seriesData, video);
+                    }
+                } else {
+                    await databaseService.updateSkipEmailStatus(videoData.identifier);
                 }
             } else {
-                await databaseService.updateSkipEmailStatus(videoData.identifier);
+                await databaseService.updateSkipEmailStatus(video.video_id);
             }
-        } else {
+        } catch (error) {
+            logger.error(`${error}`);
+            await databaseService.updateErrorDate(video.video_id);
+            await databaseService.insertErrorLog(404, error.message, video.video_id , null, null, null, null);
             await databaseService.updateSkipEmailStatus(video.video_id);
+            continue;
         }
     }
     return recipientsMap;
