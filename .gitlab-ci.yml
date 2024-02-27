@@ -54,7 +54,7 @@ test:
   coverage: /All files\s*\|\s*([\d\.]+)/
 
 # Define the process for deploy stage to development environment
-# Development environment uses https://ocast-devel-a1.it.helsinki.fi (OpenCast test environment)
+# Development environment uses https://webcast-test.it.helsinki.fi (OpenCast test environment)
 deploy_dev:
   stage: deploy
   tags:
@@ -113,7 +113,7 @@ deploy_dev:
     # set pod memory quota to 100 MB and limit to 500 MB
     - oc set resources dc/ilmoittamo-dev --limits=memory=500Mi --requests=memory=100Mi
 
-# Test environment uses https://ocast-a1-test.it.helsinki.fi (OpenCast devel environment, used for Version Switching)
+# Test environment uses https://webcast-dev.it.helsinki.fi (OpenCast devel environment, used for Version Switching)
 deploy_test:
   stage: deploy
   tags:
@@ -172,7 +172,7 @@ deploy_test:
     # set pod memory quota to 100 MB and limit to 500 MB
     - oc set resources dc/ilmoittamo-test --limits=memory=500Mi --requests=memory=100Mi
 
-# Production environment uses https://webcast.it.helsinki.fi (OpenCast production environment) 
+# Production environment uses https://webcast.it.helsinki.fi (OpenCast production environment)
 deploy_prod:
   stage: deploy
   tags:
