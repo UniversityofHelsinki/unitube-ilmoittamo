@@ -54,6 +54,11 @@ test:
   script:
     - CI=true npm run coverage
   coverage: /All files\s*\|\s*([\d\.]+)/
+  artifacts:
+    name: lataamo-ilmoittamo-coverage
+    paths:
+      - coverage
+    expire_in: 1 hour
 
 sonarqube-check:
   stage: sonarqube-check
@@ -76,6 +81,8 @@ sonarqube-check:
     - main
   needs:
     - job: dependency-check
+      artifacts: true
+    - job: test
       artifacts: true
 
 dependency-check:
