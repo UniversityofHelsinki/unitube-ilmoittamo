@@ -82,9 +82,6 @@ exports.sendMessage = async (recipient, payload) => {
             }
 
             videoDataTitle = videoData.title;
-
-
-            videoDataTitle = videoData.title;
         });
 
         const {
