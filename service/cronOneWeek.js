@@ -7,12 +7,15 @@ const {runOneMonthJob} = require("./cronOneMonth");
 
 const runOneWeekJob =  async() => {
     const videosToSendNotification = await notify.getVideosToSendNotification(null, null, null, constants.VIDEO_NOTIFIED_START_SIX_DAYS, constants.VIDEO_NOTIFIED_END_NINE_DAYS);
-    const recipientsMap = await notify.getRecipientsMap(videosToSendNotification);
-    await notify.createEmails(recipientsMap);
+    const recipientsEmailsMap = await notify.getRecipientsMap(videosToSendNotification);
+    const recipientsUsernamesMap = await notify.getRecipientsMap(videosToSendNotification, true);
+
+    await notify.createEmails(recipientsEmailsMap);
+    await notify.createFlammaMessages(recipientsUsernamesMap);
     await databaseService.updateNotificationSentAt(videosToSendNotification, constants.ONE_WEEK);
 }
 
-cronJobOneWeek = cron.schedule(process.env.CRON_START_TIME_THREE_DAYS, async() => {
+const cronJobOneWeek = cron.schedule(process.env.CRON_START_TIME_THREE_DAYS, async() => {
     logger.info(`Run cronJobOneWeek job at ${process.env.CRON_START_TIME_THREE_DAYS}`);
     await runOneWeekJob();
 });

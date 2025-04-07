@@ -4,6 +4,7 @@ const database = require('./database');
 const constants = require("../utils/constants");
 const apiService = require('./apiService');
 const emailService = require('./emailService');
+const flammaMessageService = require('./flammaMessageService');
 const databaseService = require('./databaseService');
 const logger = require('../utils/winstonLogger');
 const validator = require("email-validator");
@@ -52,6 +53,7 @@ const queryVideos = async (months, weeks, days, startingDate, endingDate) => {
         startDate = addDays(new Date(notifiedDate), startingDate);
         endDate = addDays(new Date(notifiedDate), endingDate);
     }
+
     const notifiedVideos = await database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
     return notifiedVideos;
 };
@@ -102,20 +104,34 @@ const createEmails = async (recipientsMap) => {
                 await emailService.sendMail(recipient, payload);
             } catch (error) {
                 logger.error(`sending email to recipient: ${recipient} failed with error: ${error}`);
-                continue;
             }
         } else {
             logger.error(`incorrect email : ${recipient}`);
-            continue;
         }
     }
 };
 
-const getRecipientsByGroup = async (contributor, recipients) => {
+const createFlammaMessages = async (recipientsMap) => {
+    for (const [username, payload] of recipientsMap) {
+        if (username && payload) {
+            try {
+                console.log(`sending message to recipient: ${username}`);
+                await flammaMessageService.sendMessage(username, payload);
+            } catch (error) {
+                logger.error(`sending message to recipient: ${username} failed with error: ${error}`);
+            }
+        } else {
+            logger.error(`incorrect recipient username : ${username}`);
+        }
+    }
+};
+
+const getRecipientsByGroup = async (contributor, recipients, usernames = false) => {
     let recipientsByGroup = await getRecipientsDataFromGroup(contributor);
+    console.log(recipientsByGroup);
     if (recipientsByGroup && recipientsByGroup.members && recipientsByGroup.members.length > 0) {
         for (const recipientByGroup of recipientsByGroup.members) {
-            if (recipientByGroup.email) {
+            if (recipientByGroup.email && !usernames) {
                 const recipientAddress = recipientByGroup.email;
                 if (!recipients.has(recipientAddress)) {
                     let payload = [];
@@ -127,33 +143,52 @@ const getRecipientsByGroup = async (contributor, recipients) => {
                     recipients[contributor] = payload;
                 }
             }
-        }
-    }
-}
+            else if (recipientByGroup.username && usernames) {
+                const recipientAddress = recipientByGroup.username;
+                if (!recipients.has(recipientAddress)) {
+                    let payload = [];
+                    payload.push(contributor);
+                    recipients.set(recipientAddress, payload);
+                }
+                else {
+                    let payload = recipients.get(recipientAddress);
+                    payload.push(contributor);
+                    recipients[contributor] = payload;
+                }
 
-const getDirectlyAddedRecipients = async (userNamesAddedDirectly, recipients) => {
-    if (userNamesAddedDirectly && userNamesAddedDirectly.length > 0) {
-        let directlyAddedRecipientsData = await getRecipientsData(userNamesAddedDirectly);
-        if (directlyAddedRecipientsData && directlyAddedRecipientsData.length > 0) {
-            for (const directlyAddedRecipientData of directlyAddedRecipientsData) {
-                recipients.set(directlyAddedRecipientData.email, []);
             }
         }
     }
 }
 
-const getRecipients = async(series) => {
+const getDirectlyAddedRecipients = async (userNamesAddedDirectly, recipients, usernames = false) => {
+    if (userNamesAddedDirectly && userNamesAddedDirectly.length > 0) {
+        let directlyAddedRecipientsData = await getRecipientsData(userNamesAddedDirectly);
+        if (directlyAddedRecipientsData && directlyAddedRecipientsData.length > 0) {
+            for (const directlyAddedRecipientData of directlyAddedRecipientsData) {
+                if (usernames) {
+                    recipients.set(directlyAddedRecipientData.username, []);
+                }
+                else {
+                    recipients.set(directlyAddedRecipientData.email, []);
+                }
+            }
+        }
+    }
+}
+
+const getRecipients = async(series, usernames = false) => {
     let recipients = new Map();
     let userNamesAddedDirectly = [];
     for (const contributor of series.contributors) {
         const match = constants.IAM_GROUP_PREFIXES.filter(entry => contributor.includes(entry));
         if (match && match.length > 0) {
-            await getRecipientsByGroup(contributor, recipients);
+            await getRecipientsByGroup(contributor, recipients, usernames);
         } else {
             userNamesAddedDirectly.push(contributor);
         }
     }
-    await getDirectlyAddedRecipients(userNamesAddedDirectly, recipients);
+    await getDirectlyAddedRecipients(userNamesAddedDirectly, recipients, usernames);
     return recipients;
 };
 
@@ -175,7 +210,7 @@ const populateRecipientsMap = (recipientsMap, recipientEntry, videoData, seriesD
     return recipientsMap;
 };
 
-const getRecipientsMap = async (videos) => {
+const getRecipientsMap = async (videos, usernames = false) => {
     let recipientsMap = new Map();
     for (const video of videos.rows) {
         try {
@@ -183,7 +218,7 @@ const getRecipientsMap = async (videos) => {
             const seriesData = await getSeriesData(videoData.is_part_of);
             if (videoData && seriesData) {
                 if (!isTrashSeries(seriesData)) {
-                    const recipients = await getRecipients(seriesData);
+                    const recipients = await getRecipients(seriesData, usernames);
                     for (const recipient of recipients.entries()) {
                         recipientsMap = populateRecipientsMap(recipientsMap, recipient, videoData, seriesData, video);
                     }
@@ -198,7 +233,6 @@ const getRecipientsMap = async (videos) => {
             await databaseService.updateErrorDate(video.video_id);
             await databaseService.insertErrorLog(404, error.message, video.video_id , null, null, null, null);
             await databaseService.updateSkipEmailStatus(video.video_id);
-            continue;
         }
     }
     return recipientsMap;
@@ -211,5 +245,6 @@ module.exports = {
     getVideoData : getVideoData,
     createEmails: createEmails,
     getRecipientsMap: getRecipientsMap,
-    populateRecipientsMap: populateRecipientsMap
+    populateRecipientsMap: populateRecipientsMap,
+    createFlammaMessages: createFlammaMessages
 };
