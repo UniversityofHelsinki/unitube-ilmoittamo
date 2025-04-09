@@ -49,9 +49,9 @@ app.listen(port, ipaddress, () => {
 
 (async () => {
     // START CRONJOB
-    await cronThreeMonths.cronJobThreeMonths
-    await cronOneMonth.cronJobOneMonth;
-    await cronOneWeek.cronJobOneWeek;
+    await cronThreeMonths.runThreeMonthsJob();
+    await cronOneMonth.runOneMonthJob();
+    await cronOneWeek.runOneWeekJob();
 })();
 
 module.exports = app;

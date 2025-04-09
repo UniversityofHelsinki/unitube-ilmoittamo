@@ -32,6 +32,10 @@ const getEmailTemplate = async(name) => {
     return resp;
 }
 
+const getFlammaMessageTemplate = async (headingFI) => {
+    const getFlammaMessageTemplates = fs.readFileSync(path.resolve(__dirname, "../sql/getFlammaMessageTemplates.sql"), "utf8");
+    return await database.query(getFlammaMessageTemplates, [headingFI]);
+}
 
 const updateSkipEmailStatus = async(videoId) => {
     const skipEmailStatus = true;
@@ -58,7 +62,8 @@ module.exports = {
     updateSkipEmailStatus : updateSkipEmailStatus,
     getEmailTemplate : getEmailTemplate,
     updateErrorDate : updateErrorDate,
-    insertErrorLog : insertErrorLog
+    insertErrorLog : insertErrorLog,
+    getFlammaMessageTemplate : getFlammaMessageTemplate
 };
 
 
