@@ -18,6 +18,9 @@ ILMOITTAMO_EMAIL_SENDER_HOST = http://localhost:3003 or http://127.0.0.1:3003 if
 IAM_GROUPS_HOST = https://gw-api-test.it.helsinki.fi
 IAM_GROUPS_API_KEY = xxxxxxxxxxxxxxxxxxxx
 
+MECE_MESSAGE_HOST = https://gw-api-test.it.helsinki.fi/message-center/notifications
+MECE_HOST_API_KEY = found in KeePass
+
 ## Start postgres as Docker container
 docker run --name exp_videos_postgres -p 5432:5432 -e POSTGRES_PASSWORD=xxxxxxx -e POSTGRES_DB=expired_videos -d postgres:14-alpine
 
