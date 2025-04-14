@@ -20,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
+    console.log(process.env.RUNNING_ENVIRONMENT);
     res.send('Hello World!');
 });
 

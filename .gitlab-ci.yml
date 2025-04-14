@@ -186,6 +186,10 @@ deploy_dev:
     - oc set env deploy/ilmoittamo-dev CRON_START_TIME_SIX_DAYS="30 1 1,7,13,19,25,31 * *"
     # cronJobThreeDays variable
     - oc set env deploy/ilmoittamo-dev CRON_START_TIME_THREE_DAYS="30 1 1,4,7,10,13,16,19,22,25,28,31 * *"
+    # message center environment variables
+    - oc set env deploy/ilmoittamo-dev RUNNING_ENVIRONMENT=$RUNNING_ENVIRONMENT_DEV
+    - oc set env deploy/ilmoittamo-dev MECE_MESSAGE_HOST=$MECE_MESSAGE_HOST
+    - oc set env deploy/ilmoittamo-dev MECE_HOST_API_KEY=$MECE_HOST_API_KEY
     # start build process in OpenShift
     - oc start-build ilmoittamo-dev --from-dir=. --follow
     # patch openshift buildConfig file
@@ -245,6 +249,10 @@ deploy_test:
     - oc set env deploy/ilmoittamo-test CRON_START_TIME_SIX_DAYS="30 1 1,7,13,19,25,31 * *"
     # cronJobThreeDays variable
     - oc set env deploy/ilmoittamo-test CRON_START_TIME_THREE_DAYS="30 1 1,4,7,10,13,16,19,22,25,28,31 * *"
+    # message center environment variables
+    - oc set env deploy/ilmoittamo-test RUNNING_ENVIRONMENT=$RUNNING_ENVIRONMENT_TEST
+    - oc set env deploy/ilmoittamo-test MECE_MESSAGE_HOST=$MECE_MESSAGE_HOST
+    - oc set env deploy/ilmoittamo-test MECE_HOST_API_KEY=$MECE_HOST_API_KEY
     # start build process in OpenShift
     - oc start-build ilmoittamo-test --from-dir=. --follow
     # patch openshift buildConfig file
@@ -305,6 +313,10 @@ deploy_prod:
     - oc set env deploy/ilmoittamo-prod CRON_START_TIME_SIX_DAYS="30 1 1,7,13,19,25,31 * *"
     # cronJobThreeDays variable
     - oc set env deploy/ilmoittamo-prod CRON_START_TIME_THREE_DAYS="30 1 1,4,7,10,13,16,19,22,25,28,31 * *"
+    # message center environment variables
+    - oc set env deploy/ilmoittamo-prod RUNNING_ENVIRONMENT=$RUNNING_ENVIRONMENT_PROD
+    - oc set env deploy/ilmoittamo-prod MECE_MESSAGE_HOST=$MECE_MESSAGE_HOST
+    - oc set env deploy/ilmoittamo-prod MECE_HOST_API_KEY=$MECE_HOST_API_KEY
     # start build process in OpenShift
     - oc start-build ilmoittamo-prod --from-dir=. --follow
     # patch openshift buildConfig file

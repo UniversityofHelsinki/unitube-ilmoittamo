@@ -9,6 +9,7 @@ const databaseService = require('./databaseService');
 const logger = require('../utils/winstonLogger');
 const validator = require("email-validator");
 const {getRecipientsByUserNames} = require("./apiService");
+require("dotenv").config();
 
 const addMonthsToNotifiedDate = (amountOfMonths) => {
     let notifiedDate = new Date();
@@ -54,8 +55,7 @@ const queryVideos = async (months, weeks, days, startingDate, endingDate) => {
         endDate = addDays(new Date(notifiedDate), endingDate);
     }
 
-    const notifiedVideos = await database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
-    return notifiedVideos;
+    return await database.query(selectedVideosToBeNotifiedSQL, [startDate, endDate]);
 };
 
 const getSeriesData = async (seriesId) => {
@@ -116,7 +116,10 @@ const createFlammaMessages = async (recipientsMap) => {
         if (username && payload) {
             try {
                 console.log(`sending message to recipient: ${username}`);
-                await flammaMessageService.sendMessage(username, payload);
+                console.log('running environment:', process.env.RUNNING_ENVIRONMENT)
+                if (process.env.RUNNING_ENVIRONMENT === 'production') {
+                    await flammaMessageService.sendMessage(username, payload);
+                }
             } catch (error) {
                 logger.error(`sending message to recipient: ${username} failed with error: ${error}`);
             }
