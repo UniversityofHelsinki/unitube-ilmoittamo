@@ -116,11 +116,11 @@ exports.sendMessage = async (recipient, payload) => {
         }
 
         const response = await security.flammaMessageBase.post('/post', messageBody);
-        logger.info(`message sent to ${recipient}`);
+        logger.info(`Flamma message sent to ${recipient}`);
         return response.data;
 
     } catch (error) {
-        logger.error(`error sending message: ${error.message}`);
+        logger.error(`error sending Flamma message: ${error.message}`);
         throw error;
     }
 };

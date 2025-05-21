@@ -115,8 +115,8 @@ const createFlammaMessages = async (recipientsMap) => {
     for (const [username, payload] of recipientsMap) {
         if (username && payload) {
             try {
-                console.log(`sending message to recipient: ${username}`);
-                console.log('running environment:', process.env.RUNNING_ENVIRONMENT)
+                logger.info(`trying to send Flamma message to recipient: ${username}`);
+                logger.info('running environment:', process.env.RUNNING_ENVIRONMENT);
                 if (process.env.RUNNING_ENVIRONMENT === 'production') {
                     await flammaMessageService.sendMessage(username, payload);
                 }
