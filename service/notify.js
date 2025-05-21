@@ -131,7 +131,6 @@ const createFlammaMessages = async (recipientsMap) => {
 
 const getRecipientsByGroup = async (contributor, recipients, usernames = false) => {
     let recipientsByGroup = await getRecipientsDataFromGroup(contributor);
-    console.log(recipientsByGroup);
     if (recipientsByGroup && recipientsByGroup.members && recipientsByGroup.members.length > 0) {
         for (const recipientByGroup of recipientsByGroup.members) {
             if (recipientByGroup.email && !usernames) {
