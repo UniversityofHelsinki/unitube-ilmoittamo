@@ -1,5 +1,6 @@
-FROM node:22-alpine
+FROM node:24-alpine
 RUN apk update && \
+    apk upgrade --no-cache && \
     apk add --no-cache tzdata curl
 RUN adduser node root
 COPY . /home/node/app
