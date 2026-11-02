@@ -107,7 +107,7 @@ dependency-check:
 
 generate-sbom:
   stage: dependency-track-generate
-  image: node:22-alpine
+  image: node:24-alpine
   only:
     - schedules
   tags:
@@ -192,6 +192,8 @@ deploy_dev:
     - oc set env deploy/ilmoittamo-dev MECE_HOST_API_KEY=$MECE_HOST_API_KEY
     # start build process in OpenShift
     - oc start-build ilmoittamo-dev --from-dir=. --follow
+    # patch Node version
+    - oc patch bc/ilmoittamo-dev --type=merge --patch '{"spec":{"strategy":{"dockerStrategy":{"from":null}}}}'
     # patch openshift buildConfig file
     - oc patch bc/ilmoittamo-dev --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
     - oc patch bc/ilmoittamo-dev --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
@@ -255,6 +257,8 @@ deploy_test:
     - oc set env deploy/ilmoittamo-test MECE_HOST_API_KEY=$MECE_HOST_API_KEY
     # start build process in OpenShift
     - oc start-build ilmoittamo-test --from-dir=. --follow
+    # patch Node version
+    - oc patch bc/ilmoittamo-test --type=merge --patch '{"spec":{"strategy":{"dockerStrategy":{"from":null}}}}'
     # patch openshift buildConfig file
     - oc patch bc/ilmoittamo-test --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
     - oc patch bc/ilmoittamo-test --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
@@ -319,6 +323,8 @@ deploy_prod:
     - oc set env deploy/ilmoittamo-prod MECE_HOST_API_KEY=$MECE_HOST_API_KEY
     # start build process in OpenShift
     - oc start-build ilmoittamo-prod --from-dir=. --follow
+    # patch Node version
+    - oc patch bc/ilmoittamo-prod --type=merge --patch '{"spec":{"strategy":{"dockerStrategy":{"from":null}}}}'
     # patch openshift buildConfig file
     - oc patch bc/ilmoittamo-prod --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
     - oc patch bc/ilmoittamo-prod --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
@@ -381,6 +387,8 @@ deploy_prod_periodically:
     - oc set env deploy/ilmoittamo-prod MECE_HOST_API_KEY=$MECE_HOST_API_KEY
     # start build process in OpenShift
     - oc start-build ilmoittamo-prod --from-dir=. --follow
+    # patch Node version
+    - oc patch bc/ilmoittamo-prod --type=merge --patch '{"spec":{"strategy":{"dockerStrategy":{"from":null}}}}'
     # patch openshift buildConfig file
     - oc patch bc/ilmoittamo-prod --patch '{"spec":{"successfulBuildsHistoryLimit":1}}'
     - oc patch bc/ilmoittamo-prod --patch '{"spec":{"failedBuildsHistoryLimit":1}}'
